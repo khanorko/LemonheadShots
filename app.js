@@ -35,6 +35,7 @@ let selectedStyles = new Set();
 let uploadedProfiles = [];
 let uploadedStyleRef = null;
 let primaryImageIndex = 0; // Track which image preserves facial features
+let generatedResults = []; // Store generated results for batch download
 
 // Render style grid
 function renderStylesGrid() {
@@ -56,6 +57,56 @@ function renderStylesGrid() {
   });
 }
 renderStylesGrid();
+
+// Drag & Drop Upload Functionality
+const controlsSection = document.querySelector('.gen-controls');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  controlsSection.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+  controlsSection.addEventListener(eventName, () => {
+    controlsSection.classList.add('drag-over');
+  }, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+  controlsSection.addEventListener(eventName, () => {
+    controlsSection.classList.remove('drag-over');
+  }, false);
+});
+
+controlsSection.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  
+  if (files.length > 0) {
+    // Filter for images only
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length > 0) {
+      uploadedProfiles = imageFiles;
+      primaryImageIndex = 0;
+      
+      // Update label
+      profileLabel.textContent = `📷 ${imageFiles.length} Profile Image${imageFiles.length > 1 ? 's' : ''} Selected`;
+      profileLabel.style.color = 'var(--accent)';
+      
+      // Show preview
+      displayUploadedPreviews();
+      
+      console.log(`Dropped ${imageFiles.length} image(s)`);
+    }
+  }
+}
 
 profilesInput.addEventListener("change", (e) => {
   uploadedProfiles = Array.from(e.target.files || []);
@@ -182,6 +233,7 @@ generateBtn.addEventListener("click", async () => {
   generateBtn.disabled = true;
   generateBtn.textContent = "⏳ Generating...";
   resultsGrid.innerHTML = "";
+  generatedResults = []; // Clear previous results
   
   // Show progress tracking
   showProgressTracking(Array.from(selectedStyles));
@@ -242,6 +294,11 @@ generateBtn.addEventListener("click", async () => {
         progressContainer.innerHTML = '';
       }, 3000);
     }
+    
+    // Show download all button if we have results
+    if (generatedResults.length > 0) {
+      showDownloadAllButton();
+    }
 
   } catch (err) {
     console.error(err);
@@ -293,16 +350,64 @@ function updateProgress(styleId, status, errorMsg) {
 }
 
 function appendResult(item) {
+  generatedResults.push(item); // Store for batch download
+  
   const card = document.createElement("div");
-  card.className = "result-item";
+  card.className = "result-item polaroid-developing";
   card.innerHTML = `
     <img src="${item.dataUrl}" alt="Generated ${item.style}">
     <div class="result-caption">
       <span>${item.style}</span>
-      <button class="btn btn-primary" onclick="downloadImage('${item.dataUrl}', 'style-${Date.now()}.png')">💾 Save</button>
+      <button class="btn btn-small" onclick="downloadImage('${item.dataUrl}', 'style-${Date.now()}.png')">💾 Save</button>
     </div>
   `;
   resultsGrid.appendChild(card);
+  
+  // Trigger development animation
+  setTimeout(() => {
+    card.classList.remove('polaroid-developing');
+    card.classList.add('polaroid-developed');
+  }, 100);
+}
+
+function showDownloadAllButton() {
+  // Check if button already exists
+  if (document.getElementById('downloadAllBtn')) return;
+  
+  const buttonContainer = document.createElement('div');
+  buttonContainer.className = 'download-all-container';
+  buttonContainer.innerHTML = `
+    <button id="downloadAllBtn" class="btn btn-primary">
+      📦 Download All (${generatedResults.length})
+    </button>
+    <button id="clearAllBtn" class="btn btn-secondary">
+      🗑️ Clear All
+    </button>
+  `;
+  
+  resultsGrid.parentElement.insertBefore(buttonContainer, resultsGrid);
+  
+  // Add event listeners
+  document.getElementById('downloadAllBtn').addEventListener('click', downloadAllImages);
+  document.getElementById('clearAllBtn').addEventListener('click', clearAllResults);
+}
+
+function downloadAllImages() {
+  generatedResults.forEach((item, idx) => {
+    setTimeout(() => {
+      const styleName = item.style.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      downloadImage(item.dataUrl, `headshot_${styleName}_${idx + 1}.png`);
+    }, idx * 200); // Stagger downloads
+  });
+}
+
+function clearAllResults() {
+  resultsGrid.innerHTML = '';
+  generatedResults = [];
+  const buttonContainer = document.querySelector('.download-all-container');
+  if (buttonContainer) {
+    buttonContainer.remove();
+  }
 }
 
 function displayResults(results) {
