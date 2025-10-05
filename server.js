@@ -126,6 +126,17 @@ app.post("/generate", upload.fields([
             data: primaryData,
           },
         });
+      } else if (shouldMultiAngle && profileFiles.length >= 3) {
+        // Multi-angle analysis: send all images for facial analysis
+        profileFiles.forEach(file => {
+          const data = fs.readFileSync(file.path, { encoding: "base64" });
+          parts.push({
+            inlineData: {
+              mimeType: file.mimetype,
+              data: data,
+            },
+          });
+        });
       } else {
         // For mixing or single image, add all images
         for (const file of profileFiles) {
@@ -268,6 +279,15 @@ app.post("/generate-stream", upload.fields([
 
         // SIMPLE FIX: When preserving primary face, ONLY send the primary image
         if (!shouldMixFaces && profileFiles.length > 1) {
+          // Only send the primary image - this is the person whose face we want
+          const primaryFile = profileFiles[primaryIdx];
+          const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
+          parts.push({
+            inlineData: {
+              mimeType: primaryFile.mimetype,
+              data: primaryData,
+            },
+          });
         } else if (shouldMultiAngle && profileFiles.length >= 3) {
           // Multi-angle analysis: send all images for facial analysis
           profileFiles.forEach(file => {
@@ -278,14 +298,6 @@ app.post("/generate-stream", upload.fields([
                 data: data,
               },
             });
-          });          // Only send the primary image - this is the person whose face we want
-          const primaryFile = profileFiles[primaryIdx];
-          const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
-          parts.push({
-            inlineData: {
-              mimeType: primaryFile.mimetype,
-              data: primaryData,
-            },
           });
         } else {
           // For mixing or single image, add all images
