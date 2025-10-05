@@ -286,7 +286,7 @@ body {
   cursor: default;
   transform: none;
   background: linear-gradient(135deg, #fff8e1, #f3e5ab);
-  border-color: #d4af37;
+  border: 2px dashed var(--accent-2);
   box-shadow: 0 6px 0 #b8860b, 0 12px 24px rgba(184, 134, 11, 0.3);
 }
 

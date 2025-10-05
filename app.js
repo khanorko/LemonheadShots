@@ -1124,11 +1124,15 @@ function initializeStyleSystem() {
       e.stopPropagation();
       const styleId = card.dataset.styleId;
       
-      // Toggle selection
-      if (card.classList.contains('selected')) {
-        card.classList.remove('selected');
-        selectedStyles.delete(styleId);
-      } else {
+      // Single-select behavior: deselect all others, then select this one
+      if (!card.classList.contains('selected')) {
+        // Deselect all other style cards
+        document.querySelectorAll('.style-card.selected').forEach(selectedCard => {
+          selectedCard.classList.remove('selected');
+          selectedStyles.delete(selectedCard.dataset.styleId);
+        });
+        
+        // Select this card
         card.classList.add('selected');
         selectedStyles.add(styleId);
       }
