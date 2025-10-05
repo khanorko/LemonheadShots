@@ -359,15 +359,22 @@ function updateClearUploadsButton() {
 function updatePrimarySelection() {
   const previewCards = uploadedPreviews.querySelectorAll('.preview-card');
   
-  previewCards.forEach((card, idx) => {
+  previewCards.forEach((card) => {
     const label = card.querySelector('.preview-label');
+    
     if (label) {
-      if (idx === primaryImageIndex) {
-        label.textContent = `Profile ${idx + 1} ⭐ (will be used)`;
-        card.classList.add('primary-selected');
-      } else {
-        label.textContent = `Profile ${idx + 1}`;
-        card.classList.remove('primary-selected');
+      // Extract the image index from the label text (e.g., "Profile 2" -> index 1)
+      const match = label.textContent.match(/Profile (\d+)/);
+      if (match) {
+        const imageIndex = parseInt(match[1]) - 1; // Convert to 0-based index
+        
+        if (imageIndex === primaryImageIndex) {
+          label.textContent = `Profile ${imageIndex + 1} ⭐ (will be used)`;
+          card.classList.add('primary-selected');
+        } else {
+          label.textContent = `Profile ${imageIndex + 1}`;
+          card.classList.remove('primary-selected');
+        }
       }
     }
   });
@@ -484,12 +491,17 @@ function displayUploadedPreviews() {
         <p class="preview-label">Profile ${idx + 1}${idx === primaryImageIndex ? ' ⭐' : ''}</p>
       `;
       
+      // Store the actual image index as a data attribute
+      imgCard.setAttribute('data-image-index', idx);
+      
       // Make clickable if multiple images (to select primary, not reorder)
       if (uploadedProfiles.length > 1) {
-        imgCard.addEventListener('click', () => {
-          primaryImageIndex = idx;
-          updatePrimarySelection(); // Update selection without re-rendering
-        });
+        imgCard.addEventListener('click', (function(capturedIdx) {
+          return function() {
+            primaryImageIndex = capturedIdx;
+            updatePrimarySelection(); // Update selection without re-rendering
+          };
+        })(idx));
       }
       
       previewGrid.appendChild(imgCard);
