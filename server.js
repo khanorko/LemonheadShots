@@ -167,8 +167,6 @@ app.post("/generate", upload.fields([
         contents: parts,
       });
 
-      console.log(`🔍 API Response structure:`, JSON.stringify(response, null, 2));
-
       // Extract generated image with better error handling
       if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
         console.error(`❌ Invalid API response structure:`, response);

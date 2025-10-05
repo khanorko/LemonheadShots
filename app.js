@@ -1,5 +1,38 @@
 // AI Headshot Generator — Gemini 2.5 Flash Image API
 
+const STYLE_PROMPTS = {
+  basic: "Simple, clean composition — no drama, just you and good lighting",
+  professional: "Corporate, crisp, confident. Feels like LinkedIn but better",
+  creative: "Vibrant colors, bold lighting, slightly unhinged energy",
+  vintage: "Classic film aesthetic — a portrait that smells faintly of nostalgia",
+  cinematic: "Moody, dramatic — like your face is starring in an A24 movie",
+  editorial: "Like a GQ or Vogue spread — confident, glossy, and a little dangerous",
+  outdoor: "Golden hour, wind in your hair, a soft lens flare for good measure",
+  studio: "Classic setup with perfect light ratios. Zero distractions",
+  monochrome: "Black & white elegance. Less color, more soul",
+  warm: "Golden hour magic — like sunlight hugging your skin",
+  cool: "Crisp, clean, blue-toned perfection. The Iceland of headshots",
+  artistic: "Painterly, expressive, the AI's inner Van Gogh coming alive",
+  glam: "High fashion energy. Velvet, perfume, and flawless retouch",
+  tech: "Futuristic neon lighting — like your face got scanned by a synthwave robot",
+  lemon: "Bright, tangy, unapologetically fun. AI headshots with zest. Include vibrant lemon-colored backgrounds, energetic poses, playful lighting, high saturation, whimsical vibe",
+  dreamscape: "Soft pastel haze, blurred edges, surreal glow like a memory half awake",
+  retrowave: "Hot magentas, teal highlights, VHS glow, feels like 1986 in the future",
+  forestlight: "Sun filtering through leaves, warm green reflections, cinematic calm",
+  metropolis: "Urban night, reflections on wet asphalt, blue-orange contrast, Blade Runner rain",
+  polaroid90s: "Slightly faded flash photo, harsh light, overexposed joy and nostalgia",
+  nightshift: "Dim desk lamp light, deep shadows, late night introspection energy",
+  lemonpop: "Cheerful daylight, soft yellow gradient, spontaneous grin and warm energy",
+  astroglow: "Galaxy gradient light, subtle stars behind you, violet tint, quiet confidence",
+  candyshop: "Saturated pinks and baby blues, playful studio light, glossy surfaces",
+  ghostfilm: "Desaturated monochrome with slight motion blur, hauntingly elegant",
+  lemonnoir: "Retro detective mood under neon lemon light, moody yet absurdly stylish",
+  neon: "Moody cyberpunk portrait, neon reflections, cinematic fog",
+  coffee: "Warm café lighting, shallow depth of field, natural expression",
+  rain: "Soft lighting through raindrops, reflective glass, melancholic city glow",
+  bwfilm: "High contrast monochrome, vintage 1950s style, shadow play and hard light"
+};
+
 const STYLES = [
   { id: "basic", title: "Basic", desc: "Simple, clean composition — no drama, just you and good lighting.", funFactor: 2, moodPalette: ["#fefefe", "#d8d8d8", "#bcbcbc"] },
   { id: "professional", title: "Professional", desc: "Corporate, crisp, confident. Feels like LinkedIn but better.", funFactor: 3, moodPalette: ["#f9f9f9", "#e0e0e0", "#c4c4c4"] },
@@ -1340,9 +1373,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show prompt preview on hover
   generateBtn.addEventListener("mouseenter", () => {
+    console.log("🔍 Mouse entered generate button");
     const previewText = generatePreviewPrompt();
+    console.log("🔍 Generated preview text:", previewText);
     promptPreviewText.textContent = previewText;
     promptPreview.style.display = "block";
+    console.log("🔍 Prompt preview should be visible now");
   });
 
   // Hide prompt preview on mouse leave
