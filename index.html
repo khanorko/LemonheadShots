@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Banana Headshot Generator 🍌</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>AI Headshot Generator 🍌</h1>
+    <p class="subtitle">Multi-image composition & style generation powered by Gemini</p>
+  </header>
+
+  <main class="app-main">
+    <section class="gen-controls">
+      <h2 class="section-title">AI Style Generator (Gemini 2.5 Flash Image)</h2>
+      <p class="subtitle">Upload multiple profile images, pick styles from the 4×4 grid, optionally add a style reference image, then generate.</p>
+      <div class="control-row">
+        <label class="file-input">
+          <input id="profilesInput" type="file" accept="image/*" multiple>
+          <span id="profileLabel">📷 Upload Profile Images (multi)</span>
+        </label>
+        <label class="file-input">
+          <input id="styleRefInput" type="file" accept="image/*">
+          <span id="styleRefLabel">🎨 Style Reference (optional)</span>
+        </label>
+        <select id="aspectSelect" class="btn">
+          <option value="1:1">Aspect: 1:1</option>
+          <option value="4:5">Aspect: 4:5</option>
+          <option value="3:4">Aspect: 3:4</option>
+          <option value="4:3">Aspect: 4:3</option>
+          <option value="16:9">Aspect: 16:9</option>
+        </select>
+        <label class="checkbox-label">
+          <input id="mixFacesCheck" type="checkbox">
+          <span>🎭 Mix multiple faces</span>
+        </label>
+        <button id="generateBtn" class="btn btn-primary">✨ Generate Styles</button>
+      </div>
+      <div id="uploadedPreviews" class="uploaded-previews"></div>
+      <div id="stylesGrid" class="styles-grid"></div>
+      <div id="progressContainer" class="progress-container"></div>
+      <div id="resultsGrid" class="results-grid"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>Built with <a href="https://ai.google.dev/gemini-api/docs/image-generation" target="_blank" rel="noreferrer">Gemini Image Generation API</a> 🍌</span>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

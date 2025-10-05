@@ -1,0 +1,22 @@
+{
+  "name": "banana-headshot-gen",
+  "version": "1.0.0",
+  "description": "Banana Headshot Generator with on-device face landmarking and Gemini image generation",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["gemini", "mediapipe", "headshot", "image-generation"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^0.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
+
