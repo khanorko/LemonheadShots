@@ -580,6 +580,9 @@ body {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 20px;
   border: 2px dashed var(--accent-2);
+  position: sticky;
+  top: 16px;
+  z-index: 50;
 }
 
 .progress-grid {
@@ -646,6 +649,24 @@ body {
   line-height: 1.3;
 }
 
+/* Small preview inside completed progress item */
+.mini-preview {
+  margin-left: 8px;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--text);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 2px 2px 0px var(--text);
+}
+
+.mini-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 @keyframes wiggle {
   0%, 100% {
     transform: rotate(-1deg);
@@ -674,6 +695,7 @@ body {
   .results-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
+  .progress-container { top: 8px; }
   
   .download-all-container {
     flex-direction: column;
@@ -709,4 +731,12 @@ body {
   font-size: 20px;
   opacity: 0.4;
   transform: rotate(45deg);
+}
+
+/* Step labels */
+.step-label {
+  margin: 24px 8px 8px;
+  color: var(--muted);
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
 }

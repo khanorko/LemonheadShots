@@ -237,6 +237,10 @@ generateBtn.addEventListener("click", async () => {
   
   // Show progress tracking
   showProgressTracking(Array.from(selectedStyles));
+  // Scroll progress into view
+  setTimeout(() => {
+    progressContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 
   try {
     const formData = new FormData();
@@ -279,6 +283,13 @@ generateBtn.addEventListener("click", async () => {
           } else if (data.type === 'result') {
             updateProgress(data.styleId, 'complete');
             appendResult(data.result);
+            // Scroll first result into view once
+            if (generatedResults.length === 1) {
+              setTimeout(() => {
+                const first = resultsGrid.querySelector('.result-item');
+                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 120);
+            }
           } else if (data.type === 'error') {
             updateProgress(data.styleId, 'error', data.error);
             console.error(`Generation error for ${data.styleId}:`, data.error);
@@ -295,8 +306,8 @@ generateBtn.addEventListener("click", async () => {
       }, 3000);
     }
     
-    // Show download all button if we have results
-    if (generatedResults.length > 0) {
+    // Show download all button only when multiple results
+    if (generatedResults.length > 1) {
       showDownloadAllButton();
     }
 
@@ -341,6 +352,16 @@ function updateProgress(styleId, status, errorMsg) {
     progressItem.querySelector('.progress-icon').textContent = '🔄';
   } else if (status === 'complete') {
     progressItem.querySelector('.progress-icon').textContent = '✅';
+    // Optional: add mini preview to completed progress item
+    // (keeps progress and result connected visually)
+    // Only add if not already added
+    if (!progressItem.querySelector('.mini-preview') && generatedResults[generatedResults.length - 1]) {
+      const last = generatedResults[generatedResults.length - 1];
+      const mini = document.createElement('div');
+      mini.className = 'mini-preview';
+      mini.innerHTML = `<img src="${last.dataUrl}" alt="${last.style}">`;
+      progressItem.appendChild(mini);
+    }
   } else if (status === 'error') {
     progressItem.querySelector('.progress-icon').textContent = '❌';
     if (errorMsg) {
@@ -377,9 +398,7 @@ function showDownloadAllButton() {
   const buttonContainer = document.createElement('div');
   buttonContainer.className = 'download-all-container';
   buttonContainer.innerHTML = `
-    <button id="downloadAllBtn" class="btn btn-primary">
-      📦 Download All (${generatedResults.length})
-    </button>
+    ${generatedResults.length > 1 ? `<button id="downloadAllBtn" class="btn btn-primary">📦 Download All (${generatedResults.length})</button>` : ''}
     <button id="clearAllBtn" class="btn btn-secondary">
       🗑️ Clear All
     </button>
@@ -388,7 +407,8 @@ function showDownloadAllButton() {
   resultsGrid.parentElement.insertBefore(buttonContainer, resultsGrid);
   
   // Add event listeners
-  document.getElementById('downloadAllBtn').addEventListener('click', downloadAllImages);
+  const dl = document.getElementById('downloadAllBtn');
+  if (dl) dl.addEventListener('click', downloadAllImages);
   document.getElementById('clearAllBtn').addEventListener('click', clearAllResults);
 }
 
