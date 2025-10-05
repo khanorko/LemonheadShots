@@ -1118,23 +1118,6 @@ function initializeStyleSystem() {
   }
 
   root.addEventListener('click', e => {
-    const advBtn = e.target.closest('.style-adv');
-    if (advBtn) {
-      e.stopPropagation();
-      const card = e.target.closest('.style-card');
-      const panel = card.querySelector('.adv-panel');
-      const isOpen = !panel.hasAttribute('hidden');
-      
-      if (isOpen) { 
-        panel.setAttribute('hidden', ''); 
-        advBtn.setAttribute('aria-expanded', 'false');
-      } else { 
-        panel.removeAttribute('hidden'); 
-        advBtn.setAttribute('aria-expanded', 'true');
-      }
-      return;
-    }
-
     // Handle card selection (excluding settings and reference cards)
     const card = e.target.closest('.style-card');
     if (card && !card.classList.contains('style-ref-card') && !card.classList.contains('settings-card')) {

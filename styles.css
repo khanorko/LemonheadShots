@@ -472,239 +472,6 @@ body {
   margin: 0;
 }
 
-.style-adv {
-  align-self: flex-start; 
-  border: none; 
-  cursor: pointer;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e8e); 
-  color: white; 
-  border-radius: 50%; 
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 4px 0 #e53e3e, 0 8px 15px rgba(255, 107, 107, 0.4); 
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.style-adv:hover { 
-  transform: translateY(-2px) scale(1.1); 
-  box-shadow: 0 6px 0 #e53e3e, 0 12px 25px rgba(255, 107, 107, 0.6); 
-}
-
-/* Camera Panel */
-.camera-panel { 
-  margin: 10px 0 18px; 
-  border-radius: 14px; 
-  padding: 14px 14px 10px; 
-  background: #141414; 
-  color: #d9ffd0; 
-}
-
-.meter-row { 
-  display: flex; 
-  gap: 12px; 
-}
-
-.meter { 
-  flex: 1; 
-  background: #0c0c0c; 
-  border-radius: 10px; 
-  padding: 10px 12px; 
-  color: #a6ffc1; 
-}
-
-.m-label { 
-  display: block; 
-  font-size: .75rem; 
-  opacity: .7; 
-  color: #8bf3a0; 
-}
-
-.m-value { 
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; 
-  font-size: 1.05rem; 
-}
-
-.light-row { 
-  margin-top: 10px; 
-  color: #ffe66e; 
-}
-
-/* Digital Clock Style Advanced Panel */
-.adv-panel { 
-  margin-top: var(--space-3);
-  padding: var(--space-4);
-  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-  border-radius: 8px;
-  border: 3px solid #00ff00;
-  box-shadow: 
-    inset 0 0 20px rgba(0, 255, 0, 0.1),
-    0 0 20px rgba(0, 255, 0, 0.2),
-    inset 0 2px 8px rgba(0, 0, 0, 0.5);
-  font-family: 'Courier New', 'Monaco', monospace;
-  position: relative;
-  overflow: hidden;
-}
-
-.adv-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #00ff00, transparent);
-  animation: scanLine 3s linear infinite;
-}
-
-@keyframes scanLine {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.form { 
-  display: grid; 
-  grid-template-columns: repeat(2, 1fr); 
-  gap: var(--space-3); 
-}
-
-@media (max-width: 720px) { 
-  .form { 
-    grid-template-columns: 1fr; 
-  } 
-}
-
-.form-field { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 0.5rem; 
-}
-
-.form-field select {
-  background: #000;
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  border-radius: 4px;
-  padding: 0.6rem;
-  font-family: 'Courier New', 'Monaco', monospace;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  box-shadow: 
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 10px rgba(0, 255, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.form-field select:focus {
-  outline: none;
-  border-color: #00ffff;
-  box-shadow: 
-    inset 0 0 15px rgba(0, 255, 255, 0.2),
-    0 0 15px rgba(0, 255, 255, 0.4);
-  color: #00ffff;
-}
-
-.form-field .form-label { 
-  color: #00ff00;
-  font-size: 0.85rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.4rem;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-}
-
-.form-span2 { 
-  grid-column: span 2; 
-}
-
-.chipset { 
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 0.5rem; 
-  margin-top: 0.5rem; 
-  padding: 10px;
-  border: 2px solid #00ff00;
-  border-radius: 6px;
-  background: #000;
-  box-shadow: 
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 10px rgba(0, 255, 0, 0.2);
-}
-
-.chip { 
-  background: #000;
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  border-radius: 4px;
-  padding: 0.5rem 0.9rem;
-  font-family: 'Courier New', 'Monaco', monospace;
-  font-size: 0.85rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.2);
-}
-
-.chip:hover {
-  background: #00ff00;
-  color: #000;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-  text-shadow: none;
-}
-
-.chip.is-active { 
-  background: #00ff00;
-  color: #000;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-  text-shadow: none;
-  animation: activeGlow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes activeGlow {
-  0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.6); }
-  100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.8); }
-}
-
-.adv-actions { 
-  margin-top: var(--space-3); 
-  text-align: center; 
-}
-
-.btn-reset { 
-  background: #000;
-  color: #ff0000;
-  border: 2px solid #ff0000;
-  border-radius: 4px;
-  padding: 0.6rem 1.2rem;
-  font-family: 'Courier New', 'Monaco', monospace;
-  font-size: 0.85rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-  box-shadow: 
-    inset 0 0 10px rgba(255, 0, 0, 0.1),
-    0 0 10px rgba(255, 0, 0, 0.2);
-}
-
-.btn-reset:hover {
-  background: #ff0000;
-  color: #000;
-  border-color: #ff4444;
-  box-shadow: 
-    inset 0 0 15px rgba(255, 0, 0, 0.2),
-    0 0 20px rgba(255, 0, 0, 0.4);
-  text-shadow: none;
-}
-
 /* Year Settings Card */
 .year-card {
   background: linear-gradient(135deg, #fff8e1, #f3e5ab);
@@ -2385,68 +2152,15 @@ body {
    FORM FIELD INPUT STYLES (Digital Clock Theme)
    ======================================== */
 
-.form-field input[type="text"],
-.form-field input[type="number"] {
-  background: #000;
-  color: #00ff00;
-  border: 2px solid #00ff00;
-  border-radius: 4px;
-  padding: 0.6rem;
-  font-family: 'Courier New', 'Monaco', monospace;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  box-shadow: 
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 10px rgba(0, 255, 0, 0.2);
-  transition: all 0.2s ease;
-  width: 100%;
-  min-width: 120px;
-  box-sizing: border-box;
-}
 
-.form-field input[type="text"]:focus,
-.form-field input[type="number"]:focus {
-  outline: none;
-  border-color: #00ffff;
-  box-shadow: 
-    inset 0 0 15px rgba(0, 255, 255, 0.2),
-    0 0 15px rgba(0, 255, 255, 0.4);
-  color: #00ffff;
-}
 
 /* Ensure form fields have proper width */
-.form-field {
-  min-width: 0;
-  flex: 1;
-}
 
-.form-field select {
-  width: 100%;
-  min-width: 120px;
-  box-sizing: border-box;
-}
 
 /* Fix form layout to prevent truncation */
-.adv-panel .form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.8rem;
-  width: 100%;
-}
 
-.form-field.form-span2 {
-  grid-column: span 2;
-}
 
 /* Ensure text fits properly in digital clock fields */
-.form-field select,
-.form-field input[type="text"],
-.form-field input[type="number"] {
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip;
-}
 
 
 /* ========================================
@@ -2454,35 +2168,13 @@ body {
    ======================================== */
 
 /* Ensure form fields have enough space for full text */
-.adv-panel .form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  padding: 0.5rem;
-}
 
 /* Make sure lens field has enough space */
-.form-field input[type="text"] {
-  min-width: 140px;
-  width: 100%;
-}
 
 /* Ensure all form elements fit properly */
-.form-field select,
-.form-field input {
-  font-size: 0.9rem;
-  padding: 0.5rem 0.7rem;
-}
 
 /* Fix any potential overflow issues */
-.adv-panel {
-  overflow: visible;
-}
 
-.form-field {
-  overflow: visible;
-}
 
 
 /* ========================================
@@ -2490,72 +2182,14 @@ body {
    ======================================== */
 
 /* Make form labels more readable with better contrast */
-.form-field .form-label {
-  color: #00ff00 !important;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
-  text-shadow: 
-    0 0 8px rgba(0, 255, 0, 0.8),
-    0 0 16px rgba(0, 255, 0, 0.4),
-    0 0 24px rgba(0, 255, 0, 0.2);
-  font-family: 'Courier New', 'Monaco', monospace;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  border: 1px solid rgba(0, 255, 0, 0.3);
-}
 
 /* Ensure form fields don't overflow outside the card */
-.adv-panel {
-  overflow: hidden;
-  position: relative;
-}
 
-.adv-panel .form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  padding: 0.8rem;
-  box-sizing: border-box;
-  overflow: hidden;
-}
 
 /* Fix any components that might overflow */
-.form-field {
-  overflow: hidden;
-  position: relative;
-}
 
-.form-field select,
-.form-field input[type="text"],
-.form-field input[type="number"] {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 /* Ensure chipsets don't overflow */
-.chipset {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.8rem;
-  border: 2px solid #00ff00;
-  border-radius: 6px;
-  background: #000;
-  box-shadow:
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 10px rgba(0, 255, 0, 0.2);
-  overflow: hidden;
-  box-sizing: border-box;
-}
 
 /* Make sure chips fit properly */
 .chip {
@@ -2598,20 +2232,6 @@ body {
 }
 
 /* Additional contrast improvements */
-.adv-panel {
-  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-  border-radius: 8px;
-  border: 3px solid #00ff00;
-  box-shadow:
-    inset 0 0 20px rgba(0, 255, 0, 0.1),
-    0 0 20px rgba(0, 255, 0, 0.2),
-    inset 0 2px 8px rgba(0, 0, 0, 0.5);
-  font-family: 'Courier New', 'Monaco', monospace;
-  position: relative;
-  overflow: hidden;
-  padding: 1rem;
-  box-sizing: border-box;
-}
 
 
 /* ========================================
@@ -2634,69 +2254,13 @@ body {
 }
 
 /* Ensure advanced panels are properly contained */
-.adv-panel {
-  margin-top: var(--space-3);
-  padding: var(--space-4);
-  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-  border-radius: 8px;
-  border: 3px solid #00ff00;
-  box-shadow:
-    inset 0 0 20px rgba(0, 255, 0, 0.1),
-    0 0 20px rgba(0, 255, 0, 0.2),
-    inset 0 2px 8px rgba(0, 0, 0, 0.5);
-  font-family: 'Courier New', 'Monaco', monospace;
-  position: relative;
-  overflow: hidden; /* Ensure no overflow */
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-}
 
 /* Ensure form elements don't exceed card boundaries */
-.adv-panel .form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.8rem;
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  overflow: hidden;
-}
 
 /* Make sure all form elements fit within their containers */
-.form-field {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  box-sizing: border-box;
-}
 
-.form-field select,
-.form-field input[type="text"],
-.form-field input[type="number"] {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
 
 /* Ensure chipsets fit properly */
-.chipset {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
-  padding: 0.6rem;
-  border: 2px solid #00ff00;
-  border-radius: 6px;
-  background: #000;
-  box-shadow:
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 10px rgba(0, 255, 0, 0.2);
-  overflow: hidden;
-  box-sizing: border-box;
-  width: 100%;
-}
 
 /* Make chips smaller to fit better */
 .chip {
