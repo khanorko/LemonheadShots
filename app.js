@@ -41,6 +41,269 @@ let uploadedStyleRef = null;
 let primaryImageIndex = 0; // Track which image preserves facial features
 let generatedResults = []; // Store generated results for batch download
 
+// Camera settings for each style
+const CAMERA_SETTINGS = {
+  basic: {
+    camera: "Canon EOS R5",
+    lens: "50mm f/1.8",
+    iso: 200,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "softbox"
+  },
+  professional: {
+    camera: "Canon EOS R5",
+    lens: "85mm f/1.4",
+    iso: 200,
+    aperture: "f/2.0",
+    shutter: "1/200s",
+    lighting: "softbox"
+  },
+  casual: {
+    camera: "Fujifilm X100V",
+    lens: "35mm f/2.0",
+    iso: 400,
+    aperture: "f/2.0",
+    shutter: "1/250s",
+    lighting: "overcast"
+  },
+  creative: {
+    camera: "Sony A7R IV",
+    lens: "35mm f/2.0",
+    iso: 400,
+    aperture: "f/2.8",
+    shutter: "1/250s",
+    lighting: "harsh sunlight"
+  },
+  vintage: {
+    camera: "Nikon Z9",
+    lens: "85mm f/1.4",
+    iso: 400,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "Rembrandt"
+  },
+  modern: {
+    camera: "Sony A7R IV",
+    lens: "50mm f/1.8",
+    iso: 200,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "overcast"
+  },
+  cinematic: {
+    camera: "Sony A7R IV",
+    lens: "85mm f/1.4",
+    iso: 400,
+    aperture: "f/1.8",
+    shutter: "1/160s",
+    lighting: "Rembrandt"
+  },
+  editorial: {
+    camera: "Nikon Z9",
+    lens: "24-70mm f/2.8",
+    iso: 200,
+    aperture: "f/4",
+    shutter: "1/200s",
+    lighting: "softbox"
+  },
+  outdoor: {
+    camera: "Fujifilm X100V",
+    lens: "35mm f/2.0",
+    iso: 200,
+    aperture: "f/2.8",
+    shutter: "1/500s",
+    lighting: "golden hour"
+  },
+  studio: {
+    camera: "Canon EOS R5",
+    lens: "50mm f/1.8",
+    iso: 100,
+    aperture: "f/5.6",
+    shutter: "1/160s",
+    lighting: "softbox"
+  },
+  monochrome: {
+    camera: "Nikon Z9",
+    lens: "85mm f/1.4",
+    iso: 400,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "Rembrandt"
+  },
+  warm: {
+    camera: "Canon EOS R5",
+    lens: "85mm f/1.4",
+    iso: 200,
+    aperture: "f/2.0",
+    shutter: "1/250s",
+    lighting: "golden hour"
+  },
+  cool: {
+    camera: "Sony A7R IV",
+    lens: "50mm f/1.8",
+    iso: 200,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "overcast"
+  },
+  artistic: {
+    camera: "Sony A7R IV",
+    lens: "35mm f/2.0",
+    iso: 400,
+    aperture: "f/2.8",
+    shutter: "1/250s",
+    lighting: "harsh sunlight"
+  },
+  glam: {
+    camera: "Canon EOS R5",
+    lens: "85mm f/1.4",
+    iso: 100,
+    aperture: "f/2.8",
+    shutter: "1/200s",
+    lighting: "softbox"
+  },
+  tech: {
+    camera: "Sony A7R IV",
+    lens: "50mm f/1.8",
+    iso: 200,
+    aperture: "f/4",
+    shutter: "1/200s",
+    lighting: "overcast"
+  },
+  banana: {
+    camera: "Fujifilm X100V",
+    lens: "35mm f/2.0",
+    iso: 400,
+    aperture: "f/2.8",
+    shutter: "1/250s",
+    lighting: "golden hour"
+  }
+};
+
+// Function to create advanced camera settings HTML
+function createAdvancedSettingsHTML(style) {
+  const settings = CAMERA_SETTINGS[style.id] || CAMERA_SETTINGS.basic;
+  
+  return `
+    <div class="camera-display">
+      <!-- Camera LCD Style Display -->
+      <div class="camera-lcd">
+        <div class="lcd-header">
+          <span class="camera-name">${settings.camera}</span>
+          <span class="rec-indicator">●</span>
+          <span class="lens-name">${settings.lens}</span>
+        </div>
+        
+        <div class="exposure-triangle">
+          <div class="setting-group">
+            <div class="setting-label">ISO</div>
+            <div class="setting-value iso">${settings.iso}</div>
+            <div class="setting-controls">
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'iso', -1)">-</button>
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'iso', 1)">+</button>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <div class="setting-label">F</div>
+            <div class="setting-value aperture">${settings.aperture}</div>
+            <div class="setting-controls">
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'aperture', -1)">-</button>
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'aperture', 1)">+</button>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <div class="setting-label">S</div>
+            <div class="setting-value shutter">${settings.shutter}</div>
+            <div class="setting-controls">
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'shutter', -1)">-</button>
+              <button class="control-btn" onclick="adjustSetting('${style.id}', 'shutter', 1)">+</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lighting-info">
+          <span class="light-label">Light:</span> 
+          <span class="light-value">${settings.lighting}</span>
+        </div>
+      </div>
+      
+      <!-- Advanced Controls -->
+      <div class="advanced-controls">
+        <div class="control-row">
+          <label class="control-label">Camera:</label>
+          <select class="control-select" onchange="updateSetting('${style.id}', 'camera', this.value)">
+            <option value="Canon EOS R5" ${settings.camera === 'Canon EOS R5' ? 'selected' : ''}>Canon EOS R5</option>
+            <option value="Sony A7R IV" ${settings.camera === 'Sony A7R IV' ? 'selected' : ''}>Sony A7R IV</option>
+            <option value="Nikon Z9" ${settings.camera === 'Nikon Z9' ? 'selected' : ''}>Nikon Z9</option>
+            <option value="Fujifilm X100V" ${settings.camera === 'Fujifilm X100V' ? 'selected' : ''}>Fujifilm X100V</option>
+          </select>
+        </div>
+        
+        <div class="control-row">
+          <label class="control-label">Lens:</label>
+          <select class="control-select" onchange="updateSetting('${style.id}', 'lens', this.value)">
+            <option value="85mm f/1.4" ${settings.lens === '85mm f/1.4' ? 'selected' : ''}>85mm f/1.4</option>
+            <option value="50mm f/1.8" ${settings.lens === '50mm f/1.8' ? 'selected' : ''}>50mm f/1.8</option>
+            <option value="35mm f/2.0" ${settings.lens === '35mm f/2.0' ? 'selected' : ''}>35mm f/2.0</option>
+            <option value="24-70mm f/2.8" ${settings.lens === '24-70mm f/2.8' ? 'selected' : ''}>24-70mm f/2.8</option>
+          </select>
+        </div>
+        
+        <div class="control-row">
+          <label class="control-label">Lighting:</label>
+          <select class="control-select" onchange="updateSetting('${style.id}', 'lighting', this.value)">
+            <option value="softbox" ${settings.lighting === 'softbox' ? 'selected' : ''}>Softbox</option>
+            <option value="Rembrandt" ${settings.lighting === 'Rembrandt' ? 'selected' : ''}>Rembrandt</option>
+            <option value="golden hour" ${settings.lighting === 'golden hour' ? 'selected' : ''}>Golden Hour</option>
+            <option value="overcast" ${settings.lighting === 'overcast' ? 'selected' : ''}>Overcast</option>
+            <option value="harsh sunlight" ${settings.lighting === 'harsh sunlight' ? 'selected' : ''}>Harsh Sunlight</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Prompt Preview -->
+      <div class="prompt-preview">
+        <div class="prompt-label">Enhanced Prompt:</div>
+        <div class="prompt-text">${style.desc}, camera ${settings.camera}, lens ${settings.lens}, ISO ${settings.iso}, aperture ${settings.aperture}, shutter ${settings.shutter}, lighting ${settings.lighting}</div>
+      </div>
+    </div>
+  `;
+}
+
+// Global functions for camera settings adjustments
+window.adjustSetting = function(styleId, setting, direction) {
+  const settings = CAMERA_SETTINGS[styleId];
+  if (!settings) return;
+  
+  const options = {
+    iso: [100, 200, 400, 800, 1600],
+    aperture: ['f/1.4', 'f/1.8', 'f/2.0', 'f/2.8', 'f/4', 'f/5.6', 'f/8'],
+    shutter: ['1/60s', '1/125s', '1/160s', '1/200s', '1/250s', '1/500s', '1/1000s']
+  };
+  
+  const currentIndex = options[setting].indexOf(settings[setting]);
+  if (currentIndex === -1) return;
+  
+  const newIndex = Math.max(0, Math.min(options[setting].length - 1, currentIndex + direction));
+  settings[setting] = options[setting][newIndex];
+  
+  // Update the display
+  renderStylesGrid();
+};
+
+window.updateSetting = function(styleId, setting, value) {
+  const settings = CAMERA_SETTINGS[styleId];
+  if (!settings) return;
+  
+  settings[setting] = value;
+  
+  // Update the display
+  renderStylesGrid();
+};
+
 // Render style grid with style reference card
 function renderStylesGrid() {
   stylesGrid.innerHTML = "";
@@ -86,13 +349,36 @@ function renderStylesGrid() {
   
   stylesGrid.appendChild(styleRefCard);
   
-  // Add regular style cards
+  // Add regular style cards with advanced settings
   STYLES.forEach(style => {
     const card = document.createElement("div");
     card.className = "style-card";
     if (selectedStyles.has(style.id)) card.classList.add("selected");
-    card.innerHTML = `<p class="style-title">${style.title}</p><p class="style-sub">${style.desc}</p>`;
-    card.addEventListener("click", () => {
+    
+    // Create main card content
+    const mainContent = document.createElement("div");
+    mainContent.className = "style-card-main";
+    mainContent.innerHTML = `<p class="style-title">${style.title}</p><p class="style-sub">${style.desc}</p>`;
+    
+    // Create advanced settings panel
+    const advancedPanel = document.createElement("div");
+    advancedPanel.className = "advanced-panel";
+    advancedPanel.style.display = "none";
+    advancedPanel.innerHTML = createAdvancedSettingsHTML(style);
+    
+    // Create advanced button
+    const advancedBtn = document.createElement("button");
+    advancedBtn.className = "advanced-btn";
+    advancedBtn.innerHTML = "⚙️ Avancerat";
+    advancedBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isExpanded = advancedPanel.style.display !== "none";
+      advancedPanel.style.display = isExpanded ? "none" : "block";
+      advancedBtn.innerHTML = isExpanded ? "⚙️ Avancerat" : "⚙️ Dölj";
+    });
+    
+    // Add click handler for main card
+    mainContent.addEventListener("click", () => {
       if (selectedStyles.has(style.id)) {
         selectedStyles.delete(style.id);
       } else {
@@ -101,6 +387,11 @@ function renderStylesGrid() {
       renderStylesGrid();
       updateCostEstimation();
     });
+    
+    // Assemble card
+    card.appendChild(mainContent);
+    card.appendChild(advancedBtn);
+    card.appendChild(advancedPanel);
     stylesGrid.appendChild(card);
   });
 }
