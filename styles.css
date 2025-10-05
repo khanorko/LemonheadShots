@@ -315,7 +315,7 @@ body {
 .result-item {
   border: none;
   border-radius: 0;
-  overflow: visible;
+  overflow: hidden;
   background: white;
   padding: 20px 20px 80px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -401,6 +401,8 @@ body {
 
 .result-item img { 
   width: 100%;
+  height: 200px;
+  object-fit: cover;
   display: block;
   border-radius: 4px;
 }
@@ -411,16 +413,19 @@ body {
   flex-direction: column;
   gap: 12px;
   align-items: center;
+  flex: 1;
+  justify-content: space-between;
 }
 
-.result-caption span { 
-  font-size: 14px;
+.result-caption span {
+  font-size: 18px;
   color: var(--text);
   text-align: center;
   font-family: 'Caveat', cursive;
-  font-size: 18px;
   font-weight: 600;
   line-height: 1.3;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 
 .result-caption .btn { 
