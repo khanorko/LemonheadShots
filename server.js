@@ -526,4 +526,5 @@ app.post('/api/estimate-cost', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🍋 lemon Headshot Generator backend running on http://localhost:${PORT}`);
+  console.log(`🚀 Server started successfully with latest code!`);
 });
