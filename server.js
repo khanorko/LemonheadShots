@@ -85,7 +85,7 @@ app.post("/generate", upload.fields([
       let prompt = `Create a ${stylePrompt}`;
       
       // Add year/era styling if specified
-      if (year && year !== "2024") {
+      if (year && year !== "2025") {
         prompt += ` in ${year} style`;
       }
       prompt += `. `;
@@ -242,7 +242,7 @@ app.post("/generate-stream", upload.fields([
         let prompt = `Create a ${stylePrompt}`;
         
         // Add year/era styling if specified
-        if (year && year !== "2024") {
+        if (year && year !== "2025") {
           prompt += ` in ${year} style`;
         }
         prompt += `. `;
@@ -421,7 +421,7 @@ app.post('/api/estimate-cost', (req, res) => {
       return res.status(400).json({ error: 'Selected styles required' });
     }
     
-    // Gemini 2.0 Flash pricing (as of 2024)
+    // Gemini 2.0 Flash pricing (as of 2025)
     // Image generation: ~$0.01 per image
     // We'll use a conservative estimate
     const costPerImage = 0.01; // $0.01 per generated image

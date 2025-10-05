@@ -1335,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add year/era styling if specified
     const yearValue = document.getElementById("yearSlider").value;
-    if (yearValue && yearValue !== "2024") {
+    if (yearValue && yearValue !== "2025") {
       prompt += ` in ${yearValue} style`;
     }
     prompt += `. `;
