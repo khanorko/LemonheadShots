@@ -453,6 +453,17 @@
         <footer class="generate-footer">
           <div class="center">
             <button id="generateBtn" class="generate-button" type="button">✨ Generate Headshots</button>
+            
+            <!-- Prompt Preview Card -->
+            <div id="promptPreview" class="prompt-preview-card" style="display: none;">
+              <div class="prompt-preview-header">
+                <h4>🎯 Final Prompt Preview</h4>
+                <button class="prompt-preview-close" type="button">×</button>
+              </div>
+              <div class="prompt-preview-content">
+                <p id="promptPreviewText">Loading prompt...</p>
+              </div>
+            </div>
             <div id="costEstimation" class="cost-line" style="display: none;">
               Estimated cost: <span id="costAmount">$0.00</span> (≈ <span id="costSek">0 SEK</span>)
             </div>

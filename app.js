@@ -1284,3 +1284,95 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeYearSettings();
   initializeStyleReference();
 });
+
+  // Prompt Preview functionality
+  const promptPreview = document.getElementById("promptPreview");
+  const promptPreviewText = document.getElementById("promptPreviewText");
+  const promptPreviewClose = document.querySelector(".prompt-preview-close");
+
+  // Generate preview prompt text
+  function generatePreviewPrompt() {
+    const selectedStyles = Array.from(document.querySelectorAll(".style-card.selected")).map(card => card.dataset.styleId);
+    if (selectedStyles.length === 0) return "No style selected";
+    
+    const styleId = selectedStyles[0]; // Single select now
+    const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
+    
+    let prompt = `Create a ${stylePrompt}`;
+    
+    // Add year/era styling if specified
+    const yearValue = document.getElementById("yearSlider").value;
+    if (yearValue && yearValue !== "2024") {
+      const decade = Math.floor(parseInt(yearValue) / 10) * 10;
+      prompt += ` in ${decade}s style`;
+    }
+    prompt += `. `;
+    
+    // Add face mode specific instructions
+    const faceMode = document.querySelector("input[name=\"faceMode\"]:checked").value;
+    const profileFiles = uploadedProfiles;
+    
+    if (faceMode === "mix" && profileFiles.length > 1) {
+      prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
+      prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
+    } else if (faceMode === "multi-angle" && profileFiles.length >= 3) {
+      const selectedAngle = document.querySelector("input[name=\"portraitAngle\"]:checked");
+      const anglePrompts = {
+        "front": "Generate a direct frontal portrait",
+        "three-quarter": "Generate a 3/4 angle portrait, slightly turned to the side",
+        "side": "Generate a side profile portrait",
+        "looking-up": "Generate a portrait with the person looking upward",
+        "looking-down": "Generate a portrait with the person looking downward"
+      };
+      
+      prompt += `Analyze all ${profileFiles.length} provided images of the same person from different angles. `;
+      prompt += `Build a comprehensive understanding of their facial structure, bone structure, and distinctive features. `;
+      prompt += `Use this analysis to generate a consistent portrait that maintains their unique facial identity. `;
+      prompt += `${anglePrompts[selectedAngle ? selectedAngle.value : "front"]}. `;
+      prompt += `Ensure the result is recognizably the same person across all generated images. `;
+    } else {
+      prompt += `Use the provided profile image. `;
+    }
+    
+    prompt += "Keep facial features recognizable and natural. High quality, professional result.";
+    return prompt;
+  }
+
+  // Show prompt preview on hover
+  generateBtn.addEventListener("mouseenter", () => {
+    const previewText = generatePreviewPrompt();
+    promptPreviewText.textContent = previewText;
+    promptPreview.style.display = "block";
+  });
+
+  // Hide prompt preview on mouse leave
+  generateBtn.addEventListener("mouseleave", () => {
+    // Small delay to allow moving to preview card
+    setTimeout(() => {
+      if (!promptPreview.matches(":hover")) {
+        promptPreview.style.display = "none";
+      }
+    }, 100);
+  });
+
+  // Keep preview open when hovering over it
+  promptPreview.addEventListener("mouseenter", () => {
+    promptPreview.style.display = "block";
+  });
+
+  promptPreview.addEventListener("mouseleave", () => {
+    promptPreview.style.display = "none";
+  });
+
+  // Close button functionality
+  promptPreviewClose.addEventListener("click", () => {
+    promptPreview.style.display = "none";
+  });
+
+  // Update preview when settings change
+  document.addEventListener("change", () => {
+    if (promptPreview.style.display === "block") {
+      const previewText = generatePreviewPrompt();
+      promptPreviewText.textContent = previewText;
+    }
+  });

@@ -167,7 +167,19 @@ app.post("/generate", upload.fields([
         contents: parts,
       });
 
-      // Extract generated image
+      console.log(`🔍 API Response structure:`, JSON.stringify(response, null, 2));
+
+      // Extract generated image with better error handling
+      if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
+        console.error(`❌ Invalid API response structure:`, response);
+        throw new Error("Invalid API response structure");
+      }
+
+      if (!response.candidates[0].content.parts) {
+        console.error(`❌ No parts in API response:`, response.candidates[0].content);
+        throw new Error("No parts in API response");
+      }
+
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData) {
           const base64Image = part.inlineData.data;
@@ -330,7 +342,17 @@ app.post("/generate-stream", upload.fields([
           });
           console.log(`✅ Style ${styleId} API call successful`);
 
-          // Extract generated image
+          // Extract generated image with better error handling
+          if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
+            console.error(`❌ Invalid API response structure:`, response);
+            throw new Error("Invalid API response structure");
+          }
+
+          if (!response.candidates[0].content.parts) {
+            console.error(`❌ No parts in API response:`, response.candidates[0].content);
+            throw new Error("No parts in API response");
+          }
+
           let imageFound = false;
           for (const part of response.candidates[0].content.parts) {
             if (part.inlineData) {

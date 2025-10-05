@@ -2280,3 +2280,88 @@ body {
   flex-shrink: 0;
 }
 
+
+
+/* Prompt Preview Card */
+.prompt-preview-card {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid #00ff88;
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 32px rgba(0, 255, 136, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  margin-bottom: 10px;
+  animation: promptPreviewSlideIn 0.3s ease-out;
+}
+
+.prompt-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.prompt-preview-header h4 {
+  margin: 0;
+  color: #00ff88;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.prompt-preview-close {
+  background: none;
+  border: none;
+  color: #00ff88;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.prompt-preview-close:hover {
+  background: rgba(0, 255, 136, 0.2);
+}
+
+.prompt-preview-content {
+  padding: 16px;
+}
+
+.prompt-preview-content p {
+  margin: 0;
+  color: #e0e0e0;
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+@keyframes promptPreviewSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Generate button container needs relative positioning */
+.generate-footer .center {
+  position: relative;
+}
