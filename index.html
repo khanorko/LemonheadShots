@@ -1,57 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Banana Headshot Generator 🍌</title>
-  <link rel="stylesheet" href="./styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍌 Banana Headshot Generator</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="app-header">
-    <h1>AI Headshot Generator 🍌</h1>
-    <p class="subtitle">Multi-image composition & style generation powered by Gemini</p>
-  </header>
+  <div class="container">
+    <h1 class="title">🍌 Banana Headshot Generator</h1>
 
-  <main class="app-main">
-    <section class="gen-controls">
-      <h2 class="section-title">AI Style Generator (Gemini 2.5 Flash Image)</h2>
-      <p class="subtitle">Upload multiple profile images, pick styles from the 4×4 grid, optionally add a style reference image, then generate.</p>
-      <div class="control-row">
-        <label class="file-input">
-          <input id="profilesInput" type="file" accept="image/*" multiple>
-          <span id="profileLabel">📷 Upload Profile Images (multi)</span>
-        </label>
-        <label class="file-input">
-          <input id="styleRefInput" type="file" accept="image/*">
-          <span id="styleRefLabel">🎨 Style Reference (optional)</span>
-        </label>
-        <select id="aspectSelect" class="btn">
-          <option value="1:1">Aspect: 1:1</option>
-          <option value="4:5">Aspect: 4:5</option>
-          <option value="3:4">Aspect: 3:4</option>
-          <option value="4:3">Aspect: 4:3</option>
-          <option value="16:9">Aspect: 16:9</option>
-        </select>
-        <label class="checkbox-label">
-          <input id="mixFacesCheck" type="checkbox">
-          <span>🎭 Mix multiple faces</span>
-        </label>
-        <button id="generateBtn" class="btn btn-primary">✨ Generate Styles</button>
+    <div class="controls">
+      <div class="step-header">
+        <div class="step-label">Step 1 — Upload your images</div>
+        <div class="step-actions">
+          <label for="profilesInput" class="file-input file-input-primary">
+            <span>📷 Upload Profile Images (multi)</span>
+            <input type="file" id="profilesInput" accept="image/*" multiple style="display: none;" />
+          </label>
+          <button id="clearUploadsBtn" class="btn btn-clear">🗑️ Clear Uploads</button>
+        </div>
       </div>
-      <div class="step-label">Step 1 — Upload photos</div>
+      
       <div id="uploadedPreviews" class="uploaded-previews"></div>
+      <div class="face-mode-selector">
+        <div class="mode-header">
+          <h3 class="mode-title">Face Composition Mode</h3>
+          <button id="faceModeInfoBtn" class="info-btn" title="Click for more information">ℹ️</button>
+        </div>
+        <div class="mode-options">
+          <label class="mode-option">
+            <input type="radio" name="faceMode" value="preserve" checked>
+            <div class="mode-card">
+              <div class="mode-icon">👤</div>
+              <div class="mode-text">
+                <strong>Use One Selected Image</strong>
+                <span>Generate using only the selected image (others ignored)</span>
+              </div>
+            </div>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="faceMode" value="mix">
+            <div class="mode-card">
+              <div class="mode-icon">🎭</div>
+              <div class="mode-text">
+                <strong>Mix All Faces</strong>
+                <span>Blend features from ALL images into one composite face</span>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
       <div class="step-label">Step 2 — Pick styles</div>
       <div id="stylesGrid" class="styles-grid"></div>
-      <div class="step-label">Step 3 — Generate & results</div>
-      <div id="progressContainer" class="progress-container"></div>
-      <div id="resultsGrid" class="results-grid"></div>
-    </section>
-  </main>
 
-  <footer class="app-footer">
-    <span>Built with <a href="https://ai.google.dev/gemini-api/docs/image-generation" target="_blank" rel="noreferrer">Gemini Image Generation API</a> 🍌</span>
-  </footer>
+      <div class="generate-cta">
+        <button id="generateBtn" class="btn btn-cta">✨ Generate Headshots</button>
+      </div>
+    </div>
 
-  <script type="module" src="./app.js"></script>
+    <div id="progressContainer" class="progress-container" style="display: none;"></div>
+    <div id="resultsGrid" class="results-grid"></div>
+  </div>
+
+  <!-- Info Modal -->
+  <div id="infoModal" class="info-modal" style="display: none;">
+    <div class="info-modal-content">
+      <button id="closeModalBtn" class="close-modal">×</button>
+      <h2>Face Composition Modes</h2>
+      
+      <div class="info-section">
+        <h3>👤 Use One Selected Image</h3>
+        <p><strong>How it works:</strong> Only the image you select (marked with ⭐) will be used for generation. Other uploaded images will be ignored.</p>
+        <p><strong>Best for:</strong> When you want to generate variations of a specific person's photo in different styles.</p>
+        <p><strong>Result:</strong> All generated images will show the same person from the selected image.</p>
+      </div>
+      
+      <div class="info-section">
+        <h3>🎭 Mix All Faces</h3>
+        <p><strong>How it works:</strong> The AI will blend facial features from ALL uploaded images to create a composite face.</p>
+        <p><strong>Best for:</strong> Creating an "average" or "combination" of multiple faces.</p>
+        <p><strong>Result:</strong> A unique face that combines features from all your uploaded images.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>

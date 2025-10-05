@@ -6,6 +6,7 @@ import multer from "multer";
 import cors from "cors";
 import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
+import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -24,6 +25,7 @@ const ai = new GoogleGenAI({
 });
 
 const STYLE_PROMPTS = {
+  basic: "Create a natural headshot combining the uploaded images",
   professional: "Corporate professional headshot with neutral background, well-lit, confident expression",
   casual: "Casual, relaxed, friendly headshot with natural lighting",
   creative: "Creative, artistic, colorful headshot with imaginative background",
@@ -48,45 +50,72 @@ app.post("/generate", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, aspectRatio } = req.body;
+    const { styles, primaryImageIndex, mixFaces } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
+    const primaryIdx = parseInt(primaryImageIndex) || 0;
+    const shouldMixFaces = mixFaces === 'true';
 
     if (!profileFiles.length || !selectedStyles.length) {
       return res.status(400).send("Missing profiles or styles");
     }
+    
+    const stylesToProcess = selectedStyles;
 
     const results = [];
-
-    // For each selected style, generate an image combining all profiles
-    for (const styleId of selectedStyles) {
+    for (const styleId of stylesToProcess) {
       const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
       
-      // Build prompt with composition instruction
+      // Build prompt with composition instruction based on user preferences
       let prompt = `Create a ${stylePrompt}. `;
-      if (profileFiles.length > 1) {
-        prompt += `Compose elements from all ${profileFiles.length} provided profile images into a single cohesive headshot. `;
+      
+      if (shouldMixFaces && profileFiles.length > 1) {
+        // Mix/blend all faces together
+        prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
+        prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
+      } else if (profileFiles.length > 1) {
+        // Use primary image for facial features, others for style/context
+        prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
+        prompt += `The first image contains the primary person whose face must be preserved exactly. `;
+        prompt += `Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. `;
+        prompt += `The result should look like the person in the first image, not any other image. `;
       } else {
+        // Single image
         prompt += `Use the provided profile image. `;
       }
+      
       if (styleRefFile) {
         prompt += "Apply the style and aesthetic from the style reference image. ";
       }
-      prompt += "Maintain facial features and likeness. High quality, professional result.";
+      
+      prompt += "Keep facial features recognizable and natural. High quality, professional result.";
 
       // Prepare input parts: text + images
       const parts = [{ text: prompt }];
 
-      // Add profile images
-      for (const file of profileFiles) {
-        const imageData = fs.readFileSync(file.path, { encoding: "base64" });
+      // SIMPLE FIX: When preserving primary face, ONLY send the primary image
+      if (!shouldMixFaces && profileFiles.length > 1) {
+        // Only send the primary image - this is the person whose face we want
+        const primaryFile = profileFiles[primaryIdx];
+        const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
         parts.push({
           inlineData: {
-            mimeType: file.mimetype,
-            data: imageData,
+            mimeType: primaryFile.mimetype,
+            data: primaryData,
           },
         });
+      } else {
+        // For mixing or single image, add all images
+        for (const file of profileFiles) {
+          const imageData = fs.readFileSync(file.path, { encoding: "base64" });
+          parts.push({
+            inlineData: {
+              mimeType: file.mimetype,
+              data: imageData,
+            },
+          });
+        }
       }
 
       // Add style reference if provided
@@ -104,11 +133,6 @@ app.post("/generate", upload.fields([
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-image",
         contents: parts,
-        config: {
-          imageConfig: {
-            aspectRatio: aspectRatio || "1:1",
-          },
-        },
       });
 
       // Extract generated image
@@ -123,13 +147,9 @@ app.post("/generate", upload.fields([
       }
     }
 
-    // Cleanup uploaded files
-    profileFiles.forEach(f => fs.unlinkSync(f.path));
-    if (styleRefFile) fs.unlinkSync(styleRefFile.path);
-
-    res.json(results);
+    res.json({ results });
   } catch (error) {
-    console.error("Generation error:", error);
+    console.error("Error:", error);
     res.status(500).send(error.message || "Generation failed");
   }
 });
@@ -140,16 +160,25 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, aspectRatio, primaryImageIndex, mixFaces } = req.body;
+    const { styles, primaryImageIndex, mixFaces } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
     const shouldMixFaces = mixFaces === 'true';
 
+    // Debug: Log what server receives
+    console.log(`🔍 SERVER DEBUG: Primary index received: ${primaryIdx}`);
+    console.log(`🔍 SERVER DEBUG: Total files: ${profileFiles.length}`);
+    profileFiles.forEach((file, idx) => {
+      console.log(`🔍 SERVER DEBUG: File ${idx}: ${file.originalname} (${idx === primaryIdx ? 'PRIMARY' : 'secondary'})`);
+    });
+
     if (!profileFiles.length || !selectedStyles.length) {
       return res.status(400).send("Missing profiles or styles");
     }
+    
+    const stylesToProcess = selectedStyles;
 
     // Set up Server-Sent Events
     res.setHeader('Content-Type', 'text/event-stream');
@@ -157,7 +186,7 @@ app.post("/generate-stream", upload.fields([
     res.setHeader('Connection', 'keep-alive');
 
     // For each selected style, generate an image combining all profiles
-    for (const styleId of selectedStyles) {
+    for (const styleId of stylesToProcess) {
       try {
         // Send progress update
         res.write(`data: ${JSON.stringify({ type: 'progress', styleId })}\n\n`);
@@ -173,8 +202,10 @@ app.post("/generate-stream", upload.fields([
           prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
         } else if (profileFiles.length > 1) {
           // Use primary image for facial features, others for style/context
-          prompt += `Use the facial features, expression, and likeness from image number ${primaryIdx + 1} as the primary reference. `;
-          prompt += `Maintain this person's recognizable features while incorporating style elements from the other images. `;
+          prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
+          prompt += `The first image contains the primary person whose face must be preserved exactly. `;
+          prompt += `Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. `;
+          prompt += `The result should look like the person in the first image, not any other image. `;
         } else {
           // Single image
           prompt += `Use the provided profile image. `;
@@ -189,9 +220,9 @@ app.post("/generate-stream", upload.fields([
         // Prepare input parts: text + images
         const parts = [{ text: prompt }];
 
-        // Add profile images (primary image first if not mixing)
+        // SIMPLE FIX: When preserving primary face, ONLY send the primary image
         if (!shouldMixFaces && profileFiles.length > 1) {
-          // Add primary image first
+          // Only send the primary image - this is the person whose face we want
           const primaryFile = profileFiles[primaryIdx];
           const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
           parts.push({
@@ -200,22 +231,8 @@ app.post("/generate-stream", upload.fields([
               data: primaryData,
             },
           });
-          
-          // Then add other images
-          for (let i = 0; i < profileFiles.length; i++) {
-            if (i !== primaryIdx) {
-              const file = profileFiles[i];
-              const imageData = fs.readFileSync(file.path, { encoding: "base64" });
-              parts.push({
-                inlineData: {
-                  mimeType: file.mimetype,
-                  data: imageData,
-                },
-              });
-            }
-          }
         } else {
-          // Add all images in order (for mixing or single image)
+          // For mixing or single image, add all images
           for (const file of profileFiles) {
             const imageData = fs.readFileSync(file.path, { encoding: "base64" });
             parts.push({
@@ -239,51 +256,77 @@ app.post("/generate-stream", upload.fields([
         }
 
         console.log(`Generating style: ${styleId} (primary: ${primaryIdx}, mix: ${shouldMixFaces})`);
-        const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash-image",
-          contents: parts,
-          config: {
-            imageConfig: {
-              aspectRatio: aspectRatio || "1:1",
-            },
-          },
-        });
+        try {
+          const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash-image",
+            contents: parts,
+          });
+          console.log(`✅ Style ${styleId} API call successful`);
 
-        // Extract generated image and send result
-        if (!response.candidates || !response.candidates[0]) {
-          throw new Error(`No candidates in response. Response: ${JSON.stringify(response).substring(0, 500)}`);
-        }
-        
-        if (!response.candidates[0].content || !response.candidates[0].content.parts) {
-          throw new Error(`No content parts in response. Candidate: ${JSON.stringify(response.candidates[0]).substring(0, 500)}`);
-        }
-
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            const base64Image = part.inlineData.data;
-            const result = {
-              style: STYLE_PROMPTS[styleId] || styleId,
-              dataUrl: `data:image/png;base64,${base64Image}`,
-            };
-            res.write(`data: ${JSON.stringify({ type: 'result', styleId, result })}\n\n`);
+          // Extract generated image
+          let imageFound = false;
+          for (const part of response.candidates[0].content.parts) {
+            if (part.inlineData) {
+              const base64Image = part.inlineData.data;
+              try {
+                // Save image to file instead of sending base64 through SSE
+                const filename = `${Date.now()}_${styleId}.png`;
+                const filepath = path.join(process.cwd(), 'uploads', filename);
+                
+                // Convert base64 to buffer and save to file
+                const imageBuffer = Buffer.from(base64Image, 'base64');
+                fs.writeFileSync(filepath, imageBuffer);
+                
+                console.log(`✅ Saved image for ${styleId}: ${filename} (${imageBuffer.length} bytes)`);
+                
+                // Send image URL instead of base64 data
+                const resultData = { 
+                  type: 'result', 
+                  styleId, 
+                  styleName: STYLE_PROMPTS[styleId] || styleId,
+                  imageUrl: `/uploads/${filename}`
+                };
+                const jsonString = JSON.stringify(resultData);
+                console.log(`✅ Sending result for ${styleId}, JSON size: ${jsonString.length} chars`);
+                res.write(`data: ${jsonString}\n\n`);
+                imageFound = true;
+              } catch (error) {
+                console.error('Error saving result image:', error);
+                res.write(`data: ${JSON.stringify({ type: 'error', styleId, error: 'Failed to save result image' })}\n\n`);
+              }
+            }
           }
+
+          // Send completion update (only once per style)
+          if (imageFound) {
+            res.write(`data: ${JSON.stringify({ type: 'complete', styleId })}\n\n`);
+          }
+
+        } catch (apiError) {
+          console.error(`❌ Style ${styleId} API call failed:`, apiError.message);
+          res.write(`data: ${JSON.stringify({ type: 'error', styleId, error: apiError.message })}\n\n`);
         }
-      } catch (error) {
-        console.error(`Error generating style ${styleId}:`, error);
-        res.write(`data: ${JSON.stringify({ type: 'error', styleId, error: error.message })}\n\n`);
+
+      } catch (styleError) {
+        console.error(`Error generating style ${styleId}:`, styleError);
+        res.write(`data: ${JSON.stringify({ 
+          type: 'error', 
+          styleId, 
+          error: styleError.message || 'Generation failed' 
+        })}\n\n`);
       }
     }
 
-    // Cleanup uploaded files
-    profileFiles.forEach(f => fs.unlinkSync(f.path));
-    if (styleRefFile) fs.unlinkSync(styleRefFile.path);
-
+    // Send final completion
+    res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
     res.end();
+
   } catch (error) {
-    console.error("Generation error:", error);
+    console.error("Error:", error);
     res.status(500).send(error.message || "Generation failed");
   }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
