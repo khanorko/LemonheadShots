@@ -1006,6 +1006,7 @@ function initializeStyleSystem() {
   root.addEventListener('click', e => {
     const advBtn = e.target.closest('.style-adv');
     if (advBtn) {
+      e.stopPropagation();
       const card = e.target.closest('.style-card');
       const panel = card.querySelector('.adv-panel');
       const isOpen = !panel.hasAttribute('hidden');
@@ -1013,12 +1014,29 @@ function initializeStyleSystem() {
       if (isOpen) { 
         panel.setAttribute('hidden', ''); 
         advBtn.setAttribute('aria-expanded', 'false');
-        advBtn.querySelector('span').textContent = '⚙️ Avancerat';
       } else { 
         panel.removeAttribute('hidden'); 
         advBtn.setAttribute('aria-expanded', 'true');
-        advBtn.querySelector('span').textContent = '⚙️ Dölj';
       }
+      return;
+    }
+
+    // Handle card selection (excluding reference and year cards)
+    const card = e.target.closest('.style-card');
+    if (card && !card.classList.contains('style-ref-card') && !card.classList.contains('year-card')) {
+      e.stopPropagation();
+      const styleId = card.dataset.styleId;
+      
+      // Toggle selection
+      if (card.classList.contains('selected')) {
+        card.classList.remove('selected');
+        selectedStyles.delete(styleId);
+      } else {
+        card.classList.add('selected');
+        selectedStyles.add(styleId);
+      }
+      
+      updateCostEstimation();
       return;
     }
 
