@@ -20,8 +20,81 @@ app.use(express.json());
 // Serve static frontend files
 app.use(express.static('.'));
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+// Initialize GoogleGenAI with better error handling and debugging
+let ai;
+try {
+  const apiKey = process.env.GEMINI_API_KEY;
+  console.log('🔍 API Key Debug Info:', {
+    exists: !!apiKey,
+    length: apiKey?.length || 0,
+    startsWith: apiKey?.substring(0, 10) + '...' || 'undefined',
+    envVars: Object.keys(process.env).filter(k => k.includes('GEMINI'))
+  });
+  
+  if (!apiKey) {
+    console.error('❌ GEMINI_API_KEY environment variable is not set!');
+    console.error('❌ Available env vars:', Object.keys(process.env).sort());
+    throw new Error('GEMINI_API_KEY is required');
+  }
+  
+  console.log('✅ Initializing GoogleGenAI...');
+  ai = new GoogleGenAI({
+    apiKey: apiKey,
+  });
+  console.log('✅ GoogleGenAI initialized successfully');
+} catch (error) {
+  console.error('❌ Failed to initialize GoogleGenAI:', error.message);
+  console.error('❌ This will cause API calls to fail');
+  // Don't exit - let the server start but log the error
+}
+
+// Add debug endpoint to test API key
+app.get('/debug-api', async (req, res) => {
+  try {
+    console.log('🔍 Debug API endpoint called');
+    
+    if (!ai) {
+      return res.status(500).json({ 
+        error: 'GoogleGenAI not initialized',
+        apiKeyExists: !!process.env.GEMINI_API_KEY,
+        apiKeyLength: process.env.GEMINI_API_KEY?.length || 0,
+        envVars: Object.keys(process.env).filter(k => k.includes('GEMINI'))
+      });
+    }
+    
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ 
+        error: 'GEMINI_API_KEY not set',
+        envVars: Object.keys(process.env).filter(k => k.includes('GEMINI'))
+      });
+    }
+    
+    // Test a simple API call
+    console.log('🔍 Testing API call...');
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-image",
+      contents: [{ text: "Generate a simple test image of a lemon" }],
+    });
+    
+    console.log('✅ API test successful');
+    res.json({ 
+      status: 'success', 
+      message: 'API key is working',
+      hasResponse: !!response,
+      responseStructure: {
+        hasCandidates: !!response.candidates,
+        candidatesLength: response.candidates?.length || 0
+      }
+    });
+  } catch (error) {
+    console.error('❌ API test failed:', error.message);
+    res.status(500).json({ 
+      status: 'error', 
+      message: error.message,
+      apiKeyExists: !!process.env.GEMINI_API_KEY,
+      apiKeyLength: process.env.GEMINI_API_KEY?.length || 0
+    });
+  }
 });
 
 const STYLE_PROMPTS = {
@@ -266,6 +339,14 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
+    console.log('🔍 Generate-stream endpoint called');
+    
+    // Check if AI client is initialized
+    if (!ai) {
+      console.error('❌ GoogleGenAI not initialized - cannot process request');
+      return res.status(500).json({ error: 'AI service not available' });
+    }
+    
     const { styles, primaryImageIndex, multiAngle, portraitAngle, year } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
@@ -527,4 +608,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🍋 lemon Headshot Generator backend running on http://localhost:${PORT}`);
   console.log(`🚀 Server started successfully with latest code!`);
+  console.log(`🔍 Debug endpoint available at: http://localhost:${PORT}/debug-api`);
 });
