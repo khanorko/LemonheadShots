@@ -241,7 +241,7 @@ body {
 
 .styles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Updated to match new card width */
   gap: 20px;
   margin-top: 30px;
   padding: 20px 0;
@@ -258,6 +258,7 @@ body {
   box-shadow: 3px 3px 0px var(--text);
   transform: rotate(0deg);
   position: relative;
+  width: 280px; /* Increased from 200px (40% wider) */
 }
 
 .style-card:nth-child(odd) {
@@ -823,7 +824,7 @@ body {
   }
   
   .styles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Updated for mobile */
     gap: 15px;
   }
   
