@@ -553,13 +553,27 @@ function updateFaceModeUI() {
       previewTitle.textContent = 'Uploaded Images (click to select primary face)';
     }
     
-    // Re-apply primary selection styling without regenerating everything
+    // Hide angle selection panel
+    const anglePanel = document.getElementById("angleSelectionPanel");
+    if (anglePanel) {
+      anglePanel.style.display = "none";
+    }
+    
+    // Re-apply primary selection styling and click handlers
     const allCards = uploadedPreviews.querySelectorAll('.preview-card');
     allCards.forEach((card, idx) => {
       const label = card.querySelector('.preview-label');
       
       // Only update profile cards, not style ref cards
-      if (label && label.textContent.includes('Profile')) {
+      if (label && label.textContent.includes('Profile') || label.textContent.includes('Angle')) {
+        // Restore Profile labels if they were changed to Angle
+        if (label.textContent.includes('Angle')) {
+          label.textContent = `Profile ${idx + 1}`;
+        }
+        
+        // Add click handler for primary selection
+        card.onclick = () => selectPrimaryImage(idx);
+        
         if (idx === primaryImageIndex) {
           card.classList.add('primary-selected');
           card.classList.remove('non-selected'); // Remove fade class
