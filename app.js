@@ -898,7 +898,10 @@ generateBtn.addEventListener("click", async () => {
       const selectedAngle = document.querySelector("input[name=\"portraitAngle\"]:checked");
       formData.append("portraitAngle", selectedAngle ? selectedAngle.value : "front");
     }
-    const res = await fetch("http://localhost:3000/generate-stream", {
+    
+    // Get year setting from slider
+    const yearValue = document.getElementById("yearSlider").value;
+    formData.append("year", yearValue);    const res = await fetch("http://localhost:3000/generate-stream", {
       method: "POST",
       body: formData,
     });

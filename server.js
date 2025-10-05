@@ -64,8 +64,8 @@ app.post("/generate", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle } = req.body;
-    const selectedStyles = JSON.parse(styles || "[]");
+    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
+    console.log(`🔍 SERVER DEBUG: Year setting: ${year}`);    const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
@@ -82,7 +82,14 @@ app.post("/generate", upload.fields([
       const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
       
       // Build prompt with composition instruction based on user preferences
-      let prompt = `Create a ${stylePrompt}. `;
+      let prompt = `Create a ${stylePrompt}`;
+      
+      // Add year/era styling if specified
+      if (year && year !== "2024") {
+        const decade = Math.floor(parseInt(year) / 10) * 10;
+        prompt += ` in ${decade}s style`;
+      }
+      prompt += `. `;
       
       if (shouldMixFaces && profileFiles.length > 1) {
         // Mix/blend all faces together
@@ -174,7 +181,7 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle } = req.body;
+    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
@@ -212,7 +219,14 @@ app.post("/generate-stream", upload.fields([
         const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
         
         // Build prompt with composition instruction based on user preferences
-        let prompt = `Create a ${stylePrompt}. `;
+        let prompt = `Create a ${stylePrompt}`;
+        
+        // Add year/era styling if specified
+        if (year && year !== "2024") {
+          const decade = Math.floor(parseInt(year) / 10) * 10;
+          prompt += ` in ${decade}s style`;
+        }
+        prompt += `. `;
         
         if (shouldMixFaces && profileFiles.length > 1) {
           // Mix/blend all faces together
