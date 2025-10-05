@@ -2484,3 +2484,235 @@ body {
   overflow: visible;
 }
 
+
+/* ========================================
+   DIGITAL CLOCK FORM LABEL READABILITY FIXES
+   ======================================== */
+
+/* Make form labels more readable with better contrast */
+.form-field .form-label {
+  color: #00ff00 !important;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  text-shadow: 
+    0 0 8px rgba(0, 255, 0, 0.8),
+    0 0 16px rgba(0, 255, 0, 0.4),
+    0 0 24px rgba(0, 255, 0, 0.2);
+  font-family: 'Courier New', 'Monaco', monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+/* Ensure form fields don't overflow outside the card */
+.adv-panel {
+  overflow: hidden;
+  position: relative;
+}
+
+.adv-panel .form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Fix any components that might overflow */
+.form-field {
+  overflow: hidden;
+  position: relative;
+}
+
+.form-field select,
+.form-field input[type="text"],
+.form-field input[type="number"] {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ensure chipsets don't overflow */
+.chipset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.8rem;
+  border: 2px solid #00ff00;
+  border-radius: 6px;
+  background: #000;
+  box-shadow:
+    inset 0 0 10px rgba(0, 255, 0, 0.1),
+    0 0 10px rgba(0, 255, 0, 0.2);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Make sure chips fit properly */
+.chip {
+  background: #000;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Ensure reset button doesn't overflow */
+.btn-reset {
+  background: #000;
+  color: #ff0000;
+  border: 2px solid #ff0000;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  box-shadow:
+    inset 0 0 10px rgba(255, 0, 0, 0.1),
+    0 0 10px rgba(255, 0, 0, 0.2);
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Additional contrast improvements */
+.adv-panel {
+  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+  border-radius: 8px;
+  border: 3px solid #00ff00;
+  box-shadow:
+    inset 0 0 20px rgba(0, 255, 0, 0.1),
+    0 0 20px rgba(0, 255, 0, 0.2),
+    inset 0 2px 8px rgba(0, 0, 0, 0.5);
+  font-family: 'Courier New', 'Monaco', monospace;
+  position: relative;
+  overflow: hidden;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+
+/* ========================================
+   CARD OVERFLOW FIXES
+   ======================================== */
+
+/* Ensure style cards contain their content properly */
+.style-card {
+  position: relative;
+  overflow: hidden; /* Changed from visible to hidden */
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff8e1, #f3e5ab);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border: 3px solid #ffb84d;
+  box-shadow: 0 6px 0 #ff8c42, 0 12px 24px rgba(255, 140, 66, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+  transform: rotate(-1deg);
+}
+
+/* Ensure advanced panels are properly contained */
+.adv-panel {
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+  border-radius: 8px;
+  border: 3px solid #00ff00;
+  box-shadow:
+    inset 0 0 20px rgba(0, 255, 0, 0.1),
+    0 0 20px rgba(0, 255, 0, 0.2),
+    inset 0 2px 8px rgba(0, 0, 0, 0.5);
+  font-family: 'Courier New', 'Monaco', monospace;
+  position: relative;
+  overflow: hidden; /* Ensure no overflow */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ensure form elements don't exceed card boundaries */
+.adv-panel .form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Make sure all form elements fit within their containers */
+.form-field {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.form-field select,
+.form-field input[type="text"],
+.form-field input[type="number"] {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Ensure chipsets fit properly */
+.chipset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: 2px solid #00ff00;
+  border-radius: 6px;
+  background: #000;
+  box-shadow:
+    inset 0 0 10px rgba(0, 255, 0, 0.1),
+    0 0 10px rgba(0, 255, 0, 0.2);
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Make chips smaller to fit better */
+.chip {
+  background: #000;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
