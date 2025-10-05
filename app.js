@@ -189,6 +189,7 @@ profilesInput.addEventListener("change", (e) => {
   // Button text stays the same, no need to update
   
   displayUploadedPreviews();
+  updateClearUploadsButton();
 });
 
 // Style reference is now handled through the style reference card
@@ -259,6 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (infoBtn) {
     infoBtn.addEventListener('click', showFaceModeInfo);
   }
+  
+  // Initialize UI state
+  updateClearUploadsButton();
+  displayUploadedPreviews();
 });
 
 // Show face mode information modal
@@ -330,8 +335,20 @@ clearUploadsBtn.addEventListener("click", () => {
   // Re-render styles grid to update style ref card
   renderStylesGrid();
   
+  // Update clear uploads button visibility
+  updateClearUploadsButton();
+  
   console.log("All uploads cleared");
 });
+
+// Function to update clear uploads button visibility
+function updateClearUploadsButton() {
+  if (uploadedProfiles.length > 0 || uploadedStyleRef) {
+    clearUploadsBtn.style.display = 'block';
+  } else {
+    clearUploadsBtn.style.display = 'none';
+  }
+}
 
 // Clear headshots functionality
 clearHeadshotsBtn.addEventListener("click", () => {
@@ -346,13 +363,12 @@ clearHeadshotsBtn.addEventListener("click", () => {
 function displayUploadedPreviews() {
   uploadedPreviews.innerHTML = '';
   
-  if (uploadedProfiles.length === 0 && !uploadedStyleRef) {
-    return;
-  }
-  
+  // Always show the upload section
   const previewTitle = document.createElement('h3');
   previewTitle.className = 'preview-title';
-  if (uploadedProfiles.length > 1) {
+  if (uploadedProfiles.length === 0) {
+    previewTitle.textContent = 'Upload Your Images';
+  } else if (uploadedProfiles.length > 1) {
     previewTitle.textContent = 'Uploaded Images (click to select primary face)';
   } else {
     previewTitle.textContent = 'Uploaded Images';
@@ -361,6 +377,27 @@ function displayUploadedPreviews() {
   
   const previewGrid = document.createElement('div');
   previewGrid.className = 'preview-grid';
+  
+  // Show empty upload frame if no images
+  if (uploadedProfiles.length === 0) {
+    const emptyFrame = document.createElement('div');
+    emptyFrame.className = 'empty-upload-frame';
+    emptyFrame.addEventListener('click', () => {
+      profilesInput.click();
+    });
+    
+    const ctaButton = document.createElement('button');
+    ctaButton.className = 'upload-cta-button';
+    ctaButton.textContent = '+';
+    
+    const ctaText = document.createElement('div');
+    ctaText.className = 'upload-cta-text';
+    ctaText.textContent = 'Click to upload images';
+    
+    emptyFrame.appendChild(ctaButton);
+    emptyFrame.appendChild(ctaText);
+    previewGrid.appendChild(emptyFrame);
+  }
   
   // Show profile images (clickable to select primary, but doesn't change order)
   uploadedProfiles.forEach((file, idx) => {
