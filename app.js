@@ -893,7 +893,11 @@ generateBtn.addEventListener("click", async () => {
     // Get face mode from radio buttons
     const faceMode = document.querySelector('input[name="faceMode"]:checked').value;
     formData.append("mixFaces", faceMode === "mix");
-
+    formData.append("multiAngle", faceMode === "multi-angle");
+    if (faceMode === "multi-angle") {
+      const selectedAngle = document.querySelector("input[name=\"portraitAngle\"]:checked");
+      formData.append("portraitAngle", selectedAngle ? selectedAngle.value : "front");
+    }
     const res = await fetch("http://localhost:3000/generate-stream", {
       method: "POST",
       body: formData,
