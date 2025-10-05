@@ -159,7 +159,7 @@ app.post("/generate", upload.fields([
       
       prompt = `A ${stylePrompt} portrait photographed in the visual style of ${yearNum} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. Set the background and mood to match the ${stylePrompt} aesthetic. Let the year guide wardrobe and hair: era-accurate silhouettes, fabrics and accessories with natural fit and drape, and period-consistent hair finish rendered with real strand detail, subtle flyaways and believable hairline texture. Keep it photographic and tactile: visible skin micro-texture and pores, soft subsurface scattering, tiny asymmetries, authentic film grain and halation, gentle lens vignette, slight chromatic aberration and depth falloff. Use ${gear.lighting} shaping and ${gear.camera} + ${gear.lens} at ${gear.iso}, ${gear.aperture}, ${gear.shutter}. The image should embody the time's light, texture and attitude while you freely interpret the specific clothing and hairstyle within that period vocabulary; avoid plastic skin, painterly blur or CGI cleanliness.`;
       
-      } else if (profileFiles.length > 1) {
+      if (profileFiles.length > 1) {
         // Use primary image for facial features, others for style/context
         prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
         prompt += `The first image contains the primary person whose face must be preserved exactly. `;
@@ -330,11 +330,7 @@ The scene should feel photographic, tangible, and imperfect — like a scan of a
 
 Extreme realism, cinematic lighting, authentic color bleed, film depth, and emotional truth.`;
         
-        if (shouldMixFaces && profileFiles.length > 1) {
-          // Mix/blend all faces together
-          prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
-          prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
-        } else if (shouldMultiAngle && profileFiles.length >= 3) {
+        if (shouldMultiAngle && profileFiles.length >= 3) {
           // Multi-angle analysis mode
           const anglePrompts = {
             "front": "Generate a direct frontal portrait",
@@ -367,7 +363,7 @@ Extreme realism, cinematic lighting, authentic color bleed, film depth, and emot
         const parts = [{ text: prompt }];
 
         // SIMPLE FIX: When preserving primary face, ONLY send the primary image
-        if (!shouldMixFaces && profileFiles.length > 1) {
+        if (profileFiles.length > 1) {
           // Only send the primary image - this is the person whose face we want
           const primaryFile = profileFiles[primaryIdx];
           const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
@@ -389,7 +385,7 @@ Extreme realism, cinematic lighting, authentic color bleed, film depth, and emot
             });
           });
         } else {
-          // For mixing or single image, add all images
+          // Single image - add the only image
           for (const file of profileFiles) {
             const imageData = fs.readFileSync(file.path, { encoding: "base64" });
             parts.push({
