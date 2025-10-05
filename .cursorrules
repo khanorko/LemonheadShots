@@ -1,0 +1,101 @@
+# Banana Headshot Generator - Tech Stack & Project Rules
+
+## 🍌 Project Overview
+AI-powered headshot generator using Google Gemini API to create professional headshots from uploaded images.
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Node.js** - JavaScript runtime environment
+- **Express.js** - Web application framework
+- **Google Gemini API** - AI image generation service (`gemini-2.0-flash`)
+- **Multer** - File upload middleware for handling image uploads
+- **CORS** - Cross-origin resource sharing middleware
+- **dotenv** - Environment variable management
+- **ES Modules** - Modern JavaScript module system (`import/export`)
+
+### Frontend
+- **Vanilla JavaScript** - No framework, pure JS
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling with:
+  - CSS Grid and Flexbox for layouts
+  - CSS Custom Properties (variables)
+  - CSS Transitions and animations
+  - Responsive design
+
+### File Handling
+- **Server-Sent Events (SSE)** - Real-time communication for generation progress
+- **Base64 encoding** - Image data processing
+- **File system operations** - Saving generated images to `/uploads` directory
+
+### Development Tools
+- **Git** - Version control
+- **npm** - Package management
+- **Local development server** - Running on `http://localhost:3000`
+
+## 📁 Project Structure
+```
+BananaHeadshotGen/
+├── app.js              # Frontend JavaScript
+├── index.html          # Main HTML file
+├── styles.css          # CSS styling
+├── server.js           # Backend Express server
+├── package.json        # Dependencies
+├── .env                # Environment variables (GEMINI_API_KEY)
+├── uploads/            # Generated images storage
+└── README.md           # Project documentation
+```
+
+## 🎨 Key Features
+- **Real-time progress tracking** via SSE
+- **File upload handling** with drag & drop
+- **Server-side cost calculation** for API usage
+- **Multi-currency support** (USD/SEK)
+- **Polaroid-style UI** with CSS animations
+- **Results accumulation** (no replacement on new generations)
+- **Conditional UI elements** (buttons show/hide based on state)
+
+## 🔧 Development Guidelines
+
+### Code Style
+- Use ES6+ features (arrow functions, const/let, template literals)
+- Prefer `const` over `let` when possible
+- Use meaningful variable names
+- Add comments for complex logic
+
+### CSS Architecture
+- Use CSS custom properties for theming
+- Follow BEM-like naming for complex components
+- Use flexbox/grid for layouts
+- Implement responsive design patterns
+
+### API Integration
+- All Gemini API calls go through server-side endpoints
+- Cost calculations are server-side to prevent tampering
+- Use SSE for real-time updates
+- Handle errors gracefully with try-catch blocks
+
+### File Organization
+- Keep frontend logic in `app.js`
+- Server logic in `server.js`
+- Styles in `styles.css`
+- Generated images in `uploads/` directory
+
+## 🚀 Deployment Notes
+- Requires `GEMINI_API_KEY` environment variable
+- Server runs on port 3000 by default
+- Static files served from root directory
+- File uploads stored in `uploads/` directory
+
+## 🐛 Common Issues & Solutions
+- **Large base64 images**: Use file storage instead of SSE streaming
+- **ES Module issues**: Use `process.cwd()` instead of `__dirname`
+- **CORS errors**: Ensure CORS middleware is properly configured
+- **Image overflow**: Use `object-fit: cover` and fixed dimensions
+
+## 📝 Recent Changes
+- Added server-side cost estimation
+- Implemented results accumulation
+- Fixed image sizing in polaroid frames
+- Added SEK currency conversion
+- Improved UI collation and styling
