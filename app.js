@@ -514,12 +514,16 @@ function displayUploadedPreviews() {
   
   // Wait for all images to load, then ensure correct order
   Promise.all(imagePromises).then((results) => {
-    // Sort the preview grid to match the original array order
-    const sortedCards = results.sort((a, b) => a.idx - b.idx);
-    previewGrid.innerHTML = '';
-    sortedCards.forEach(({ imgCard }) => {
-      previewGrid.appendChild(imgCard);
-    });
+    // Only clear and reorder if there are actual images
+    if (results.length > 0) {
+      // Sort the preview grid to match the original array order
+      const sortedCards = results.sort((a, b) => a.idx - b.idx);
+      previewGrid.innerHTML = '';
+      sortedCards.forEach(({ imgCard }) => {
+        previewGrid.appendChild(imgCard);
+      });
+    }
+    // If results.length === 0, keep the empty frame that was already added
   });
   
   // Show style reference if present
