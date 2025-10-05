@@ -2380,3 +2380,107 @@ body {
   }
 }
 
+
+/* ========================================
+   FORM FIELD INPUT STYLES (Digital Clock Theme)
+   ======================================== */
+
+.form-field input[type="text"],
+.form-field input[type="number"] {
+  background: #000;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.95rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  box-shadow: 
+    inset 0 0 10px rgba(0, 255, 0, 0.1),
+    0 0 10px rgba(0, 255, 0, 0.2);
+  transition: all 0.2s ease;
+  width: 100%;
+  min-width: 120px;
+  box-sizing: border-box;
+}
+
+.form-field input[type="text"]:focus,
+.form-field input[type="number"]:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 
+    inset 0 0 15px rgba(0, 255, 255, 0.2),
+    0 0 15px rgba(0, 255, 255, 0.4);
+  color: #00ffff;
+}
+
+/* Ensure form fields have proper width */
+.form-field {
+  min-width: 0;
+  flex: 1;
+}
+
+.form-field select {
+  width: 100%;
+  min-width: 120px;
+  box-sizing: border-box;
+}
+
+/* Fix form layout to prevent truncation */
+.adv-panel .form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.form-field.form-span2 {
+  grid-column: span 2;
+}
+
+/* Ensure text fits properly in digital clock fields */
+.form-field select,
+.form-field input[type="text"],
+.form-field input[type="number"] {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+
+/* ========================================
+   ADDITIONAL FORM FIELD FIXES
+   ======================================== */
+
+/* Ensure form fields have enough space for full text */
+.adv-panel .form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+/* Make sure lens field has enough space */
+.form-field input[type="text"] {
+  min-width: 140px;
+  width: 100%;
+}
+
+/* Ensure all form elements fit properly */
+.form-field select,
+.form-field input {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
+}
+
+/* Fix any potential overflow issues */
+.adv-panel {
+  overflow: visible;
+}
+
+.form-field {
+  overflow: visible;
+}
+
