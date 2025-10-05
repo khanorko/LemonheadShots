@@ -243,7 +243,6 @@ app.post("/generate-stream", upload.fields([
           // Mix/blend all faces together
           prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
           prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
-        } else if (profileFiles.length > 1) {
         } else if (shouldMultiAngle && profileFiles.length >= 3) {
           // Multi-angle analysis mode
           const anglePrompts = {
@@ -258,11 +257,10 @@ app.post("/generate-stream", upload.fields([
           prompt += `Build a comprehensive understanding of their facial structure, bone structure, and distinctive features. `;
           prompt += `Use this analysis to generate a consistent portrait that maintains their unique facial identity. `;
           prompt += `${anglePrompts[selectedAngle] || anglePrompts["front"]}. `;
-          prompt += `Ensure the result is recognizably the same person across all generated images. `;          // Use primary image for facial features, others for style/context
-          prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
-          prompt += `The first image contains the primary person whose face must be preserved exactly. `;
-          prompt += `Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. `;
-          prompt += `The result should look like the person in the first image, not any other image. `;
+          prompt += `Ensure the result is recognizably the same person across all generated images. `;
+        } else if (profileFiles.length > 1) {
+          // Use primary image only
+          prompt += `Use the provided profile image. `;
         } else {
           // Single image
           prompt += `Use the provided profile image. `;
