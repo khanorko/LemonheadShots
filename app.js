@@ -470,43 +470,56 @@ function displayUploadedPreviews() {
   }
   
   // Show profile images (clickable to select primary, but doesn't change order)
-  uploadedProfiles.forEach((file, idx) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imgCard = document.createElement('div');
-      imgCard.className = 'preview-card';
-      
-      // Add clickable class if multiple images
-      if (uploadedProfiles.length > 1) {
-        imgCard.classList.add('clickable');
-      }
-      
-      // Add primary-selected class if this is the primary image
-      if (idx === primaryImageIndex) {
-        imgCard.classList.add('primary-selected');
-      }
-      
-      imgCard.innerHTML = `
-        <img src="${e.target.result}" alt="Profile ${idx + 1}">
-        <p class="preview-label">Profile ${idx + 1}${idx === primaryImageIndex ? ' ⭐' : ''}</p>
-      `;
-      
-      // Store the actual image index as a data attribute
-      imgCard.setAttribute('data-image-index', idx);
-      
-      // Make clickable if multiple images (to select primary, not reorder)
-      if (uploadedProfiles.length > 1) {
-        imgCard.addEventListener('click', (function(capturedIdx) {
-          return function() {
-            primaryImageIndex = capturedIdx;
-            updatePrimarySelection(); // Update selection without re-rendering
-          };
-        })(idx));
-      }
-      
+  const imagePromises = uploadedProfiles.map((file, idx) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imgCard = document.createElement('div');
+        imgCard.className = 'preview-card';
+        
+        // Add clickable class if multiple images
+        if (uploadedProfiles.length > 1) {
+          imgCard.classList.add('clickable');
+        }
+        
+        // Add primary-selected class if this is the primary image
+        if (idx === primaryImageIndex) {
+          imgCard.classList.add('primary-selected');
+        }
+        
+        imgCard.innerHTML = `
+          <img src="${e.target.result}" alt="Profile ${idx + 1}">
+          <p class="preview-label">Profile ${idx + 1}${idx === primaryImageIndex ? ' ⭐' : ''}</p>
+        `;
+        
+        // Store the actual image index as a data attribute
+        imgCard.setAttribute('data-image-index', idx);
+        
+        // Make clickable if multiple images (to select primary, not reorder)
+        if (uploadedProfiles.length > 1) {
+          imgCard.addEventListener('click', (function(capturedIdx) {
+            return function() {
+              primaryImageIndex = capturedIdx;
+              updatePrimarySelection(); // Update selection without re-rendering
+            };
+          })(idx));
+        }
+        
+        previewGrid.appendChild(imgCard);
+        resolve({ imgCard, idx });
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+  
+  // Wait for all images to load, then ensure correct order
+  Promise.all(imagePromises).then((results) => {
+    // Sort the preview grid to match the original array order
+    const sortedCards = results.sort((a, b) => a.idx - b.idx);
+    previewGrid.innerHTML = '';
+    sortedCards.forEach(({ imgCard }) => {
       previewGrid.appendChild(imgCard);
-    };
-    reader.readAsDataURL(file);
+    });
   });
   
   // Show style reference if present
