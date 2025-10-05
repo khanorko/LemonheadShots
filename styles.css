@@ -334,18 +334,24 @@ body {
 }
 
 .style-card.selected {
-  transform: rotate(0deg) translateY(-5px) scale(1.05);
-  border-width: 4px;
-  box-shadow: 0 15px 0 #ff8c42, 0 30px 60px rgba(255, 140, 66, 0.5);
-  z-index: 15;
+  transform: rotate(0deg) translateY(-8px) scale(1.08);
+  border-width: 5px;
+  box-shadow: 0 20px 0 #ff8c42, 0 40px 80px rgba(255, 140, 66, 0.6);
+  z-index: 20;
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7, #fdcb6e);
+  border-color: #e17055;
 }
 
 .style-card:nth-child(even).selected {
-  box-shadow: 0 15px 0 #388e3c, 0 30px 60px rgba(76, 175, 80, 0.5);
+  box-shadow: 0 20px 0 #388e3c, 0 40px 80px rgba(76, 175, 80, 0.6);
+  background: linear-gradient(135deg, #d1f2eb, #a3e4d7, #7dcea0);
+  border-color: #27ae60;
 }
 
 .style-card:nth-child(3n).selected {
-  box-shadow: 0 15px 0 #c2185b, 0 30px 60px rgba(233, 30, 99, 0.5);
+  box-shadow: 0 20px 0 #c2185b, 0 40px 80px rgba(233, 30, 99, 0.6);
+  background: linear-gradient(135deg, #fce4ec, #f8bbd9, #f48fb1);
+  border-color: #ad1457;
 }
 
 .style-head { 
@@ -433,17 +439,21 @@ body {
   color: #ffe66e; 
 }
 
-/* Advanced Panel */
+/* Digital Clock Style Advanced Panel */
 .adv-panel { 
-  margin-top: var(--space-3); 
-  padding-top: var(--space-3); 
-  border-top: 1px dashed var(--line); 
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border-radius: 12px;
+  border: 2px solid #444;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-family: 'Courier New', monospace;
 }
 
 .form { 
   display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 14px 16px; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: var(--space-3); 
 }
 
 @media (max-width: 720px) { 
@@ -453,64 +463,98 @@ body {
 }
 
 .form-field { 
-  display: block; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.5rem; 
 }
 
 .form-field select {
-  width: 100%; 
-  border: 1px solid rgba(0, 0, 0, .14); 
-  border-radius: 12px; 
-  padding: 10px 12px; 
-  background: #fff;
+  background: #000;
+  color: #00ff00;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.form-field select:focus {
+  outline: 2px solid #00ff00;
+  outline-offset: 1px;
 }
 
 .form-field .form-label { 
-  font-size: .82rem; 
-  opacity: .75; 
-  margin-bottom: 6px; 
+  color: #00ff00;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
 }
 
 .form-span2 { 
-  grid-column: 1 / -1; 
+  grid-column: span 2; 
 }
 
 .chipset { 
   display: flex; 
   flex-wrap: wrap; 
-  gap: 8px; 
-  padding: 6px; 
-  border: 1px solid rgba(0, 0, 0, .14); 
-  border-radius: 12px; 
-  background: #fff; 
+  gap: 0.5rem; 
+  margin-top: 0.5rem; 
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #000;
 }
 
 .chip { 
-  padding: 6px 10px; 
-  border-radius: 999px; 
-  border: 1px solid rgba(0, 0, 0, .14); 
-  background: #fff; 
-  cursor: pointer; 
+  background: #000;
+  color: #00ff00;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  background: #00ff00;
+  color: #000;
+  border-color: #00ff00;
 }
 
 .chip.is-active { 
-  background: #1a1a1a; 
-  color: #fff; 
-  border-color: #1a1a1a; 
+  background: #00ff00;
+  color: #000;
+  border-color: #00ff00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
 }
 
 .adv-actions { 
-  display: flex; 
-  justify-content: flex-end; 
-  margin-top: 12px; 
+  margin-top: var(--space-3); 
+  text-align: center; 
 }
 
 .btn-reset { 
-  background: transparent; 
-  border: 1px dashed rgba(0, 0, 0, .2); 
-  border-radius: 999px; 
-  padding: .4rem .8rem; 
-  font-size: .8rem; 
-  cursor: pointer; 
+  background: #ff0000;
+  color: #fff;
+  border: 1px solid #cc0000;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-reset:hover {
+  background: #cc0000;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
 }
 
 /* Year Settings Card */

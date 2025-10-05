@@ -1021,9 +1021,9 @@ function initializeStyleSystem() {
       return;
     }
 
-    // Handle card selection (excluding reference and year cards)
+    // Handle card selection (excluding only reference card)
     const card = e.target.closest('.style-card');
-    if (card && !card.classList.contains('style-ref-card') && !card.classList.contains('year-card')) {
+    if (card && !card.classList.contains('style-ref-card')) {
       e.stopPropagation();
       const styleId = card.dataset.styleId;
       
