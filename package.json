@@ -1,7 +1,7 @@
 {
-  "name": "banana-headshot-gen",
+  "name": "lemon-headshot-gen",
   "version": "1.0.0",
-  "description": "Banana Headshot Generator with on-device face landmarking and Gemini image generation",
+  "description": "lemon Headshot Generator with on-device face landmarking and Gemini image generation",
   "type": "module",
   "main": "server.js",
   "scripts": {

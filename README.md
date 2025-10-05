@@ -1,11 +1,11 @@
-# AI Headshot Generator 🍌
+# AI Headshot Generator 🍋
 
-Multi-image composition & style generation powered by **Gemini 2.5 Flash Image** (aka "Nano Banana"). Upload multiple profile images, select from a 4×4 grid of styles (professional, casual, creative, vintage, etc.), optionally add a style reference image, and generate high-quality styled headshots.
+Multi-image composition & style generation powered by **Gemini 2.5 Flash Image** (aka "Nano lemon"). Upload multiple profile images, select from a 4×4 grid of styles (professional, casual, creative, vintage, etc.), optionally add a style reference image, and generate high-quality styled headshots.
 
 ## Features
 
 - **Multi-image composition**: Upload multiple profile images and compose them into one cohesive headshot
-- **16 preset styles**: Professional, Casual, Creative, Vintage, Modern, Cinematic, Editorial, Outdoor, Studio, Monochrome, Warm Tones, Cool Tones, Artistic, Glamorous, Tech, and Banana Costume 🍌
+- **16 preset styles**: Professional, Casual, Creative, Vintage, Modern, Cinematic, Editorial, Outdoor, Studio, Monochrome, Warm Tones, Cool Tones, Artistic, Glamorous, Tech, and lemon Costume 🍋
 - **Style reference image**: Optionally upload an image to transfer its style to your headshot
 - **Aspect ratio control**: 1:1, 4:5, 3:4, 4:3, 16:9
 - **Iterative refinement**: Generate and re-generate with different styles
@@ -21,7 +21,7 @@ Multi-image composition & style generation powered by **Gemini 2.5 Flash Image**
 
 1. **Clone or download this repo**:
    ```bash
-   cd /Users/johansalo/BananaHeadshotGen
+   cd /Users/johansalo/lemonHeadshotGen
    ```
 
 2. **Install backend dependencies**:
@@ -103,11 +103,11 @@ Backend (server.js, Node.js + Express)
 - **Professional**: Corporate headshot, neutral background, confident expression
 - **Cinematic**: Dramatic lighting with shallow depth of field
 - **Vintage**: Classic film aesthetic with period-appropriate color grading
-- **Banana Costume 🍌**: Fun and playful banana suit overlay
+- **lemon Costume 🍋**: Fun and playful lemon suit overlay
 
 ## Credits
 
-- Image generation: [Gemini 2.5 Flash Image (Nano Banana)](https://ai.google.dev/gemini-api/docs/image-generation)
+- Image generation: [Gemini 2.5 Flash Image (Nano lemon)](https://ai.google.dev/gemini-api/docs/image-generation)
 - Built by Johan Salo
 
 ## License
