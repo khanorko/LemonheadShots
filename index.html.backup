@@ -49,16 +49,7 @@
               </div>
             </div>
           </label>
-          <label class="mode-option">
-            <input type="radio" name="faceMode" value="multi-angle">
-            <div class="mode-card">
-              <div class="mode-icon">🔄</div>
-              <div class="mode-text">
-                <strong>Multi-Angle Analysis</strong>
-                <span>Analyze same person from different angles, generate consistent portraits</span>
-              </div>
-            </div>
-          </label>        </div>
+        </div>
       </div>
       <div class="step-label">Step 2 — Pick styles</div>
       
@@ -1466,70 +1457,7 @@
           </div>
         </footer>
       </section>
-      <!-- Angle Selection Panel (hidden by default) -->
-      <div class="angle-selection-panel" id="angleSelectionPanel" style="display: none;">
-        <div class="angle-header">
-          <h3 class="angle-title">📐 Choose Portrait Angle</h3>
-          <p class="angle-subtitle">Select the angle for your generated portrait</p>
-        </div>
-        
-        <div class="angle-options">
-          <label class="angle-option">
-            <input type="radio" name="portraitAngle" value="front" checked>
-            <div class="angle-card">
-              <div class="angle-icon">👤</div>
-              <div class="angle-text">
-                <strong>Front View</strong>
-                <span>Direct frontal portrait</span>
-              </div>
-            </div>
-          </label>
-          
-          <label class="angle-option">
-            <input type="radio" name="portraitAngle" value="three-quarter">
-            <div class="angle-card">
-              <div class="angle-icon">↗️</div>
-              <div class="angle-text">
-                <strong>3/4 Angle</strong>
-                <span>Slightly turned, classic portrait</span>
-              </div>
-            </div>
-          </label>
-          
-          <label class="angle-option">
-            <input type="radio" name="portraitAngle" value="side">
-            <div class="angle-card">
-              <div class="angle-icon">👈</div>
-              <div class="angle-text">
-                <strong>Side Profile</strong>
-                <span>Classic profile view</span>
-              </div>
-            </div>
-          </label>
-          
-          <label class="angle-option">
-            <input type="radio" name="portraitAngle" value="looking-up">
-            <div class="angle-card">
-              <div class="angle-icon">👆</div>
-              <div class="angle-text">
-                <strong>Looking Up</strong>
-                <span>Confident, upward gaze</span>
-              </div>
-            </div>
-          </label>
-          
-          <label class="angle-option">
-            <input type="radio" name="portraitAngle" value="looking-down">
-            <div class="angle-card">
-              <div class="angle-icon">👇</div>
-              <div class="angle-text">
-                <strong>Looking Down</strong>
-                <span>Thoughtful, downward gaze</span>
-              </div>
-            </div>
-          </label>
-        </div>
-      </div>    </div>
+    </div>
 
     <div id="progressContainer" class="progress-container" style="display: none;"></div>
     <div id="resultsSection" class="results-section" style="display: none;">

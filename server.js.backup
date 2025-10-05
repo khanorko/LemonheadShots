@@ -64,7 +64,7 @@ app.post("/generate", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle } = req.body;
+    const { styles, primaryImageIndex, mixFaces } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
@@ -174,17 +174,13 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle } = req.body;
+    const { styles, primaryImageIndex, mixFaces } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
     const shouldMixFaces = mixFaces === 'true';
-    const shouldMultiAngle = multiAngle === "true";
-    const selectedAngle = portraitAngle || "front";
-    
-    console.log(`🔍 SERVER DEBUG: Multi-angle analysis: ${shouldMultiAngle}`);
-    console.log(`🔍 SERVER DEBUG: Selected angle: ${selectedAngle}`);
+
     // Debug: Log what server receives
     console.log(`🔍 SERVER DEBUG: Primary index received: ${primaryIdx}`);
     console.log(`🔍 SERVER DEBUG: Total files: ${profileFiles.length}`);
@@ -219,21 +215,7 @@ app.post("/generate-stream", upload.fields([
           prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
           prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
         } else if (profileFiles.length > 1) {
-        } else if (shouldMultiAngle && profileFiles.length >= 3) {
-          // Multi-angle analysis mode
-          const anglePrompts = {
-            "front": "Generate a direct frontal portrait",
-            "three-quarter": "Generate a 3/4 angle portrait, slightly turned to the side",
-            "side": "Generate a side profile portrait",
-            "looking-up": "Generate a portrait with the person looking upward",
-            "looking-down": "Generate a portrait with the person looking downward"
-          };
-          
-          prompt += `Analyze all ${profileFiles.length} provided images of the same person from different angles. `;
-          prompt += `Build a comprehensive understanding of their facial structure, bone structure, and distinctive features. `;
-          prompt += `Use this analysis to generate a consistent portrait that maintains their unique facial identity. `;
-          prompt += `${anglePrompts[selectedAngle] || anglePrompts["front"]}. `;
-          prompt += `Ensure the result is recognizably the same person across all generated images. `;          // Use primary image for facial features, others for style/context
+          // Use primary image for facial features, others for style/context
           prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
           prompt += `The first image contains the primary person whose face must be preserved exactly. `;
           prompt += `Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. `;
@@ -254,17 +236,7 @@ app.post("/generate-stream", upload.fields([
 
         // SIMPLE FIX: When preserving primary face, ONLY send the primary image
         if (!shouldMixFaces && profileFiles.length > 1) {
-        } else if (shouldMultiAngle && profileFiles.length >= 3) {
-          // Multi-angle analysis: send all images for facial analysis
-          profileFiles.forEach(file => {
-            const data = fs.readFileSync(file.path, { encoding: "base64" });
-            parts.push({
-              inlineData: {
-                mimeType: file.mimetype,
-                data: data,
-              },
-            });
-          });          // Only send the primary image - this is the person whose face we want
+          // Only send the primary image - this is the person whose face we want
           const primaryFile = profileFiles[primaryIdx];
           const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
           parts.push({

@@ -511,34 +511,7 @@ function updateFaceModeUI() {
     });
     
   } else {
-  } else if (faceMode === "multi-angle") {
-    // Multi-angle analysis mode
-    const anglePanel = document.getElementById("angleSelectionPanel");
-    if (anglePanel) {
-      anglePanel.style.display = uploadedProfiles.length >= 3 ? "block" : "none";
-    }
-    
-    if (previewTitle && uploadedProfiles.length >= 3) {
-      previewTitle.textContent = "Multi-Angle Analysis: Uploaded images will be analyzed to build a comprehensive facial model";
-    } else if (previewTitle && uploadedProfiles.length > 0) {
-      previewTitle.textContent = "Multi-Angle Analysis: Upload 3+ photos from different angles for best results";
-    }
-    
-    // Remove primary selection styling from all images
-    const allCards = uploadedPreviews.querySelectorAll(".preview-card");
-    allCards.forEach(card => {
-      card.classList.remove("primary-selected");
-      card.classList.remove("non-selected");
-    });
-    
-    // Update labels to show they are all used for analysis
-    const allLabels = uploadedPreviews.querySelectorAll(".preview-label");
-    allLabels.forEach((label, idx) => {
-      if (label.textContent.includes("Profile")) {
-        label.textContent = `Angle ${idx + 1}`;
-      }
-    });
-        // When preserving primary, show selection interface
+    // When preserving primary, show selection interface
     if (previewTitle && uploadedProfiles.length > 1) {
       previewTitle.textContent = 'Uploaded Images (click to select primary face)';
     }
@@ -894,11 +867,7 @@ generateBtn.addEventListener("click", async () => {
     // Get face mode from radio buttons
     const faceMode = document.querySelector('input[name="faceMode"]:checked').value;
     formData.append("mixFaces", faceMode === "mix");
-    formData.append("multiAngle", faceMode === "multi-angle");
-    if (faceMode === "multi-angle") {
-      const selectedAngle = document.querySelector("input[name="portraitAngle"]:checked");
-      formData.append("portraitAngle", selectedAngle ? selectedAngle.value : "front");
-    }
+
     const res = await fetch("http://localhost:3000/generate-stream", {
       method: "POST",
       body: formData,
