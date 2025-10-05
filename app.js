@@ -510,7 +510,6 @@ function updateFaceModeUI() {
       }
     });
     
-  } else {
   } else if (faceMode === "multi-angle") {
     // Multi-angle analysis mode
     const anglePanel = document.getElementById("angleSelectionPanel");
@@ -537,8 +536,8 @@ function updateFaceModeUI() {
       if (label.textContent.includes("Profile")) {
         label.textContent = `Angle ${idx + 1}`;
       }
-    });
-        // When preserving primary, show selection interface
+    });  } else {
+    // When preserving primary, show selection interface
     if (previewTitle && uploadedProfiles.length > 1) {
       previewTitle.textContent = 'Uploaded Images (click to select primary face)';
     }
@@ -894,11 +893,7 @@ generateBtn.addEventListener("click", async () => {
     // Get face mode from radio buttons
     const faceMode = document.querySelector('input[name="faceMode"]:checked').value;
     formData.append("mixFaces", faceMode === "mix");
-    formData.append("multiAngle", faceMode === "multi-angle");
-    if (faceMode === "multi-angle") {
-      const selectedAngle = document.querySelector("input[name="portraitAngle"]:checked");
-      formData.append("portraitAngle", selectedAngle ? selectedAngle.value : "front");
-    }
+
     const res = await fetch("http://localhost:3000/generate-stream", {
       method: "POST",
       body: formData,
