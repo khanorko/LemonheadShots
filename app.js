@@ -355,6 +355,27 @@ function updateClearUploadsButton() {
   }
 }
 
+// Function to update primary selection without re-rendering all images
+function updatePrimarySelection() {
+  const previewCards = uploadedPreviews.querySelectorAll('.preview-card');
+  
+  previewCards.forEach((card, idx) => {
+    const label = card.querySelector('.preview-label');
+    if (label) {
+      if (idx === primaryImageIndex) {
+        label.textContent = `Profile ${idx + 1} ⭐ (will be used)`;
+        card.classList.add('primary-selected');
+      } else {
+        label.textContent = `Profile ${idx + 1}`;
+        card.classList.remove('primary-selected');
+      }
+    }
+  });
+  
+  // Update face mode UI
+  updateFaceModeUI();
+}
+
 // Function to update cost estimation
 async function updateCostEstimation() {
   try {
@@ -467,7 +488,7 @@ function displayUploadedPreviews() {
       if (uploadedProfiles.length > 1) {
         imgCard.addEventListener('click', () => {
           primaryImageIndex = idx;
-          displayUploadedPreviews(); // Re-render to show selection
+          updatePrimarySelection(); // Update selection without re-rendering
         });
       }
       
