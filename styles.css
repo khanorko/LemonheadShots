@@ -10,6 +10,19 @@
   --accent-3: #ffd23f;
   --shadow: rgba(0, 0, 0, 0.15);
   --shadow-soft: rgba(0, 0, 0, 0.08);
+  
+  /* New design system variables */
+  --space-0: 0;
+  --space-1: .5rem;
+  --space-2: .75rem;
+  --space-3: 1rem;
+  --space-4: 1.25rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --radius-card: 18px;
+  --shadow-lift: 0 10px 24px rgba(0,0,0,.12);
+  --line: rgba(0,0,0,.10);
 }
 
 * { box-sizing: border-box; }
@@ -239,70 +252,68 @@ body {
   text-align: center;
 }
 
+/* Själva griden med korten */
 .styles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Updated to match new card width */
-  gap: 20px;
-  margin-top: 30px;
-  padding: 20px 0;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: var(--space-5);
 }
 
+@media (max-width: 1100px) {
+  .styles-grid { 
+    grid-template-columns: repeat(2, minmax(0,1fr)); 
+    gap: var(--space-5); 
+  }
+}
+
+@media (max-width: 680px) {
+  .styles-grid { 
+    grid-template-columns: 1fr; 
+    gap: var(--space-4); 
+  }
+}
+
+/* Kort */
 .style-card {
-  border: 3px solid var(--text);
-  border-radius: 15px;
-  background: white;
-  padding: 16px;
+  position: relative;
+  border-radius: var(--radius-card);
+  background: #fffdf8;
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  border: 2px solid #2b231b;
+  box-shadow: 0 2px 0 #2b231b;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease;
-  box-shadow: 3px 3px 0px var(--text);
-  transform: rotate(0deg);
-  position: relative;
-  width: 280px; /* Increased from 200px (40% wider) */
 }
 
-.style-card:nth-child(odd) {
-  transform: rotate(-1deg);
+.style-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-soft);
+  background: #fffbed;
 }
 
-.style-card:nth-child(even) {
-  transform: rotate(1deg);
+/* Markerad stil (aktiv) */
+.style-card.selected {
+  outline: 3px solid #ffa94d;
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
 }
 
-.style-card:hover { 
-  transform: rotate(0deg) translateY(-5px) scale(1.03);
-  box-shadow: 6px 6px 0px var(--text);
-  background: #fffef9;
-}
-
-.style-card.selected { 
-  background: var(--accent);
-  border-color: var(--text);
-  color: white;
-  transform: rotate(0deg) scale(1.05);
-  box-shadow: 0 8px 16px rgba(255, 140, 66, 0.4);
-}
-
-.style-card.selected .style-title,
-.style-card.selected .style-sub {
-  color: white;
-}
-
-.style-title { 
-  font-size: 18px;
-  color: var(--text);
-  margin: 0 0 8px;
+/* Titel och beskrivning i kort */
+.style-title {
   font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: .35rem;
+  color: var(--text);
   font-family: 'Caveat', cursive;
-  font-size: 22px;
 }
 
-.style-sub { 
-  font-size: 13px;
-  color: var(--muted);
+.style-sub {
+  opacity: .8;
+  font-size: .92rem;
+  line-height: 1.35;
+  color: var(--text);
   margin: 0;
-  line-height: 1.4;
-  font-weight: 500;
 }
 
 .results-grid {
@@ -971,15 +982,45 @@ body {
 }
 
 /* Generate CTA */
+/* Footer med generate-knapp och cost */
 .generate-cta {
+  margin-top: var(--space-7);
+  padding: var(--space-6) var(--space-5);
+  border-top: 1px dashed var(--line);
+  background: linear-gradient(to bottom, #ffffff, #fffceb);
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 30px 0;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
-  border: 2px dashed var(--accent-2);
+}
+
+.generate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: .95rem 1.4rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: #ffb84d;
+  color: #2b231b;
+  border: 2px solid #2b231b;
+  box-shadow: 0 4px 0 #2b231b, 0 14px 30px rgba(255,184,77,.35);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  cursor: pointer;
+}
+
+.generate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #2b231b, 0 20px 40px rgba(255,184,77,.45);
+  filter: saturate(1.05);
+}
+
+.cost-line {
+  margin-top: .6rem;
+  font-size: .9rem;
+  opacity: .8;
+  text-align: center;
 }
 
 .btn-cta {
@@ -1325,35 +1366,61 @@ body {
   color: var(--accent);
 }
 
-/* Advanced Camera Settings */
+/* Avancerat-knappen nere till höger */
 .advanced-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 15px;
-  font-size: 11px;
-  font-weight: 600;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .75rem;
+  padding: .45rem .8rem;
+  border-radius: 999px;
+  color: #fff;
+  background: #1a1a1a;
+  box-shadow: 0 2px 0 rgba(0,0,0,.25);
+  opacity: .9;
+  transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease;
   cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 10;
+  border: none;
 }
 
 .advanced-btn:hover {
-  background: rgba(0, 0, 0, 1);
-  transform: scale(1.05);
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.18);
 }
 
+/* Avancerat-panelen när den öppnas */
 .advanced-panel {
-  margin-top: 15px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.95);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--line);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 680px) {
+  .advanced-panel { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+.adv-field label {
+  display: block;
+  font-size: .8rem;
+  margin-bottom: .35rem;
+  opacity: .75;
+}
+
+.adv-field select {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.12);
   border-radius: 12px;
-  border: 2px solid var(--accent-2);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: .55rem .7rem;
+  background: #fff;
 }
 
 .camera-display {
