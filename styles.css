@@ -708,7 +708,8 @@ body {
   transition: all 0.3s ease;
   position: relative;
   width: 280px;
-  height: 380px;
+  height: auto;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -786,7 +787,7 @@ body {
 
 .result-item img { 
   width: 100%;
-  height: 240px;
+  height: 300px;
   object-fit: contain;
   display: block;
   border-radius: 4px;
