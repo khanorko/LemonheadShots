@@ -64,8 +64,8 @@ app.post("/generate", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces } = req.body;
-    const selectedStyles = JSON.parse(styles || "[]");
+    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
+    console.log(`🔍 SERVER DEBUG: Year setting: ${year}`);    const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
@@ -82,7 +82,14 @@ app.post("/generate", upload.fields([
       const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
       
       // Build prompt with composition instruction based on user preferences
-      let prompt = `Create a ${stylePrompt}. `;
+      let prompt = `Create a ${stylePrompt}`;
+      
+      // Add comprehensive year/era styling (always include year context)
+      if (year && year !== "2025") {
+        prompt = `A ${stylePrompt} portrait photographed in the visual style of ${year} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. This period influences the natural look, fashion, and hairstyle of the subject. Set the background and mood to match the ${stylePrompt} aesthetic. The image should embody the authentic visual aesthetics of the time — including light, texture, and attitude — while you freely interpret details like clothing, hair, and makeup.`;
+      } else {
+        prompt = `A ${stylePrompt} portrait photographed in the visual style of 2025 — captured using modern camera gear, lighting, color tone, composition, and shot types typical of contemporary photography. This period influences the natural look, fashion, and hairstyle of the subject. Set the background and mood to match the ${stylePrompt} aesthetic. The image should embody the authentic visual aesthetics of the time — including light, texture, and attitude — while you freely interpret details like clothing, hair, and makeup.`;
+      }
       
       if (shouldMixFaces && profileFiles.length > 1) {
         // Mix/blend all faces together
@@ -119,6 +126,17 @@ app.post("/generate", upload.fields([
             data: primaryData,
           },
         });
+      } else if (shouldMultiAngle && profileFiles.length >= 3) {
+        // Multi-angle analysis: send all images for facial analysis
+        profileFiles.forEach(file => {
+          const data = fs.readFileSync(file.path, { encoding: "base64" });
+          parts.push({
+            inlineData: {
+              mimeType: file.mimetype,
+              data: data,
+            },
+          });
+        });
       } else {
         // For mixing or single image, add all images
         for (const file of profileFiles) {
@@ -149,7 +167,17 @@ app.post("/generate", upload.fields([
         contents: parts,
       });
 
-      // Extract generated image
+      // Extract generated image with better error handling
+      if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
+        console.error(`❌ Invalid API response structure:`, response);
+        throw new Error("Invalid API response structure");
+      }
+
+      if (!response.candidates[0].content.parts) {
+        console.error(`❌ No parts in API response:`, response.candidates[0].content);
+        throw new Error("No parts in API response");
+      }
+
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData) {
           const base64Image = part.inlineData.data;
@@ -174,13 +202,17 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces } = req.body;
+    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
     const shouldMixFaces = mixFaces === 'true';
-
+    const shouldMultiAngle = multiAngle === "true";
+    const selectedAngle = portraitAngle || "front";
+    
+    console.log(`🔍 SERVER DEBUG: Multi-angle analysis: ${shouldMultiAngle}`);
+    console.log(`🔍 SERVER DEBUG: Selected angle: ${selectedAngle}`);
     // Debug: Log what server receives
     console.log(`🔍 SERVER DEBUG: Primary index received: ${primaryIdx}`);
     console.log(`🔍 SERVER DEBUG: Total files: ${profileFiles.length}`);
@@ -208,18 +240,37 @@ app.post("/generate-stream", upload.fields([
         const stylePrompt = STYLE_PROMPTS[styleId] || "Professional headshot";
         
         // Build prompt with composition instruction based on user preferences
-        let prompt = `Create a ${stylePrompt}. `;
+        let prompt = `Create a ${stylePrompt}`;
+        
+        // Add comprehensive year/era styling (always include year context)
+        if (year && year !== "2025") {
+          prompt = `A ${stylePrompt} portrait photographed in the visual style of ${year} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. This period influences the natural look, fashion, and hairstyle of the subject. Set the background and mood to match the ${stylePrompt} aesthetic. The image should embody the authentic visual aesthetics of the time — including light, texture, and attitude — while you freely interpret details like clothing, hair, and makeup.`;
+        } else {
+          prompt = `A ${stylePrompt} portrait photographed in the visual style of 2025 — captured using modern camera gear, lighting, color tone, composition, and shot types typical of contemporary photography. This period influences the natural look, fashion, and hairstyle of the subject. Set the background and mood to match the ${stylePrompt} aesthetic. The image should embody the authentic visual aesthetics of the time — including light, texture, and attitude — while you freely interpret details like clothing, hair, and makeup.`;
+        }
         
         if (shouldMixFaces && profileFiles.length > 1) {
           // Mix/blend all faces together
           prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
           prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
+        } else if (shouldMultiAngle && profileFiles.length >= 3) {
+          // Multi-angle analysis mode
+          const anglePrompts = {
+            "front": "Generate a direct frontal portrait",
+            "three-quarter": "Generate a 3/4 angle portrait, slightly turned to the side",
+            "side": "Generate a side profile portrait",
+            "looking-up": "Generate a portrait with the person looking upward",
+            "looking-down": "Generate a portrait with the person looking downward"
+          };
+          
+          prompt += `Analyze all ${profileFiles.length} provided images of the same person from different angles. `;
+          prompt += `Build a comprehensive understanding of their facial structure, bone structure, and distinctive features. `;
+          prompt += `Use this analysis to generate a consistent portrait that maintains their unique facial identity. `;
+          prompt += `${anglePrompts[selectedAngle] || anglePrompts["front"]}. `;
+          prompt += `Ensure the result is recognizably the same person across all generated images. `;
         } else if (profileFiles.length > 1) {
-          // Use primary image for facial features, others for style/context
-          prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
-          prompt += `The first image contains the primary person whose face must be preserved exactly. `;
-          prompt += `Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. `;
-          prompt += `The result should look like the person in the first image, not any other image. `;
+          // Use primary image only
+          prompt += `Use the provided profile image. `;
         } else {
           // Single image
           prompt += `Use the provided profile image. `;
@@ -244,6 +295,17 @@ app.post("/generate-stream", upload.fields([
               mimeType: primaryFile.mimetype,
               data: primaryData,
             },
+          });
+        } else if (shouldMultiAngle && profileFiles.length >= 3) {
+          // Multi-angle analysis: send all images for facial analysis
+          profileFiles.forEach(file => {
+            const data = fs.readFileSync(file.path, { encoding: "base64" });
+            parts.push({
+              inlineData: {
+                mimeType: file.mimetype,
+                data: data,
+              },
+            });
           });
         } else {
           // For mixing or single image, add all images
@@ -278,7 +340,17 @@ app.post("/generate-stream", upload.fields([
           });
           console.log(`✅ Style ${styleId} API call successful`);
 
-          // Extract generated image
+          // Extract generated image with better error handling
+          if (!response.candidates || !response.candidates[0] || !response.candidates[0].content) {
+            console.error(`❌ Invalid API response structure:`, response);
+            throw new Error("Invalid API response structure");
+          }
+
+          if (!response.candidates[0].content.parts) {
+            console.error(`❌ No parts in API response:`, response.candidates[0].content);
+            throw new Error("No parts in API response");
+          }
+
           let imageFound = false;
           for (const part of response.candidates[0].content.parts) {
             if (part.inlineData) {
@@ -351,7 +423,7 @@ app.post('/api/estimate-cost', (req, res) => {
       return res.status(400).json({ error: 'Selected styles required' });
     }
     
-    // Gemini 2.0 Flash pricing (as of 2024)
+    // Gemini 2.0 Flash pricing (as of 2025)
     // Image generation: ~$0.01 per image
     // We'll use a conservative estimate
     const costPerImage = 0.01; // $0.01 per generated image

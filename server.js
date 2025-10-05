@@ -84,11 +84,30 @@ app.post("/generate", upload.fields([
       // Build prompt with composition instruction based on user preferences
       let prompt = `Create a ${stylePrompt}`;
       
-      // Add year/era styling if specified
-      if (year && year !== "2025") {
-        prompt += ` in ${year} style`;
-      }
-      prompt += `. `;
+      // Add comprehensive cinematic film photography styling (always include year context)
+      const yearNum = parseInt(year) || 2025;
+      
+      // Dynamic camera gear selection based on year
+      const getCameraGear = (year) => {
+        if (year >= 2020) return { camera: "Canon EOS R5", lens: "85mm f/1.4L", iso: "ISO 100", aperture: "f/2.8" };
+        if (year >= 2010) return { camera: "Canon 5D Mark II", lens: "85mm f/1.8", iso: "ISO 200", aperture: "f/2.8" };
+        if (year >= 2000) return { camera: "Canon EOS-1D", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/3.5" };
+        if (year >= 1990) return { camera: "Canon EOS 1", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/4" };
+        if (year >= 1980) return { camera: "Canon AE-1", lens: "85mm f/2", iso: "ISO 200", aperture: "f/4" };
+        if (year >= 1970) return { camera: "Canon FTb", lens: "85mm f/2.8", iso: "ISO 100", aperture: "f/5.6" };
+        if (year >= 1960) return { camera: "Canon P", lens: "85mm f/3.5", iso: "ISO 50", aperture: "f/5.6" };
+        return { camera: "Canon VT", lens: "85mm f/4", iso: "ISO 25", aperture: "f/8" };
+      };
+      
+      const gear = getCameraGear(yearNum);
+      
+      prompt = `A ${stylePrompt} portrait captured on handheld 35mm film using a ${gear.camera} with ${gear.lens} at ${gear.iso}, ${gear.aperture}. Photographed in the visual style of ${yearNum}. Golden hour film grain, analog imperfections, slight chromatic aberration, real lens halation, handheld focus softness.
+
+Visible skin texture, natural pores, subtle asymmetry, micro-reflections in eyes.
+
+The scene should feel photographic, tangible, and imperfect — like a scan of a real negative with dust and light leak.
+
+Extreme realism, cinematic lighting, authentic color bleed, film depth, and emotional truth.`;
       
       if (shouldMixFaces && profileFiles.length > 1) {
         // Mix/blend all faces together
@@ -241,11 +260,30 @@ app.post("/generate-stream", upload.fields([
         // Build prompt with composition instruction based on user preferences
         let prompt = `Create a ${stylePrompt}`;
         
-        // Add year/era styling if specified
-        if (year && year !== "2025") {
-          prompt += ` in ${year} style`;
-        }
-        prompt += `. `;
+      // Add comprehensive cinematic film photography styling (always include year context)
+      const yearNum = parseInt(year) || 2025;
+      
+      // Dynamic camera gear selection based on year
+      const getCameraGear = (year) => {
+        if (year >= 2020) return { camera: "Canon EOS R5", lens: "85mm f/1.4L", iso: "ISO 100", aperture: "f/2.8" };
+        if (year >= 2010) return { camera: "Canon 5D Mark II", lens: "85mm f/1.8", iso: "ISO 200", aperture: "f/2.8" };
+        if (year >= 2000) return { camera: "Canon EOS-1D", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/3.5" };
+        if (year >= 1990) return { camera: "Canon EOS 1", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/4" };
+        if (year >= 1980) return { camera: "Canon AE-1", lens: "85mm f/2", iso: "ISO 200", aperture: "f/4" };
+        if (year >= 1970) return { camera: "Canon FTb", lens: "85mm f/2.8", iso: "ISO 100", aperture: "f/5.6" };
+        if (year >= 1960) return { camera: "Canon P", lens: "85mm f/3.5", iso: "ISO 50", aperture: "f/5.6" };
+        return { camera: "Canon VT", lens: "85mm f/4", iso: "ISO 25", aperture: "f/8" };
+      };
+      
+      const gear = getCameraGear(yearNum);
+      
+      prompt = `A ${stylePrompt} portrait captured on handheld 35mm film using a ${gear.camera} with ${gear.lens} at ${gear.iso}, ${gear.aperture}. Photographed in the visual style of ${yearNum}. Golden hour film grain, analog imperfections, slight chromatic aberration, real lens halation, handheld focus softness.
+
+Visible skin texture, natural pores, subtle asymmetry, micro-reflections in eyes.
+
+The scene should feel photographic, tangible, and imperfect — like a scan of a real negative with dust and light leak.
+
+Extreme realism, cinematic lighting, authentic color bleed, film depth, and emotional truth.`;
         
         if (shouldMixFaces && profileFiles.length > 1) {
           // Mix/blend all faces together
