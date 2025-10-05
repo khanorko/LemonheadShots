@@ -291,7 +291,7 @@ window.adjustSetting = function(styleId, setting, direction) {
   settings[setting] = options[setting][newIndex];
   
   // Update the display
-  renderStylesGrid();
+  // renderStylesGrid(); // No longer needed with static HTML
 };
 
 window.updateSetting = function(styleId, setting, value) {
@@ -301,101 +301,14 @@ window.updateSetting = function(styleId, setting, value) {
   settings[setting] = value;
   
   // Update the display
-  renderStylesGrid();
+  // renderStylesGrid(); // No longer needed with static HTML
 };
 
-// Render style grid with style reference card
-function renderStylesGrid() {
-  stylesGrid.innerHTML = "";
-  
-  // Add style reference card first
-  const styleRefCard = document.createElement("div");
-  styleRefCard.className = "style-ref-card";
-  if (uploadedStyleRef) {
-    styleRefCard.classList.add("has-ref");
-  }
-  
-  const refTitle = uploadedStyleRef ? `🎨 Style Ref: ${uploadedStyleRef.name}` : "🎨 Your Own Style (Optional)";
-  const refDesc = uploadedStyleRef ? "Click to change or remove" : "Upload a reference image to apply its style to all generated headshots";
-  
-  styleRefCard.innerHTML = `<p class="style-title">${refTitle}</p><p class="style-sub">${refDesc}</p>`;
-  
-  styleRefCard.addEventListener("click", () => {
-    if (uploadedStyleRef) {
-      // Clear existing style ref
-      uploadedStyleRef = null;
-      renderStylesGrid();
-      displayUploadedPreviews();
-    } else {
-      // Create a temporary file input for style reference
-      const tempInput = document.createElement('input');
-      tempInput.type = 'file';
-      tempInput.accept = 'image/*';
-      tempInput.style.display = 'none';
-      tempInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-          uploadedStyleRef = file;
-          console.log(`Style reference uploaded: ${file.name}`);
-          renderStylesGrid();
-          displayUploadedPreviews();
-        }
-        document.body.removeChild(tempInput);
-      });
-      document.body.appendChild(tempInput);
-      tempInput.click();
-    }
-  });
-  
-  stylesGrid.appendChild(styleRefCard);
-  
-  // Add regular style cards with advanced settings
-  STYLES.forEach(style => {
-    const card = document.createElement("div");
-    card.className = "style-card";
-    if (selectedStyles.has(style.id)) card.classList.add("selected");
-    
-    // Create main card content
-    const mainContent = document.createElement("div");
-    mainContent.className = "style-card-main";
-    mainContent.innerHTML = `<p class="style-title">${style.title}</p><p class="style-sub">${style.desc}</p>`;
-    
-    // Create advanced settings panel
-    const advancedPanel = document.createElement("div");
-    advancedPanel.className = "advanced-panel";
-    advancedPanel.style.display = "none";
-    advancedPanel.innerHTML = createAdvancedSettingsHTML(style);
-    
-    // Create advanced button
-    const advancedBtn = document.createElement("button");
-    advancedBtn.className = "advanced-btn";
-    advancedBtn.innerHTML = "⚙️ Avancerat";
-    advancedBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isExpanded = advancedPanel.style.display !== "none";
-      advancedPanel.style.display = isExpanded ? "none" : "block";
-      advancedBtn.innerHTML = isExpanded ? "⚙️ Avancerat" : "⚙️ Dölj";
-    });
-    
-    // Add click handler for main card
-    mainContent.addEventListener("click", () => {
-      if (selectedStyles.has(style.id)) {
-        selectedStyles.delete(style.id);
-      } else {
-        selectedStyles.add(style.id);
-      }
-      renderStylesGrid();
-      updateCostEstimation();
-    });
-    
-    // Assemble card
-    card.appendChild(mainContent);
-    card.appendChild(advancedBtn);
-    card.appendChild(advancedPanel);
-    stylesGrid.appendChild(card);
-  });
-}
-renderStylesGrid();
+// Old renderStylesGrid function - now using static HTML
+// function renderStylesGrid() {
+//   // This function is no longer needed as we use static HTML
+// }
+// renderStylesGrid();
 
 // Drag & Drop Upload Functionality
 const controlsSection = document.querySelector('.controls');
@@ -629,7 +542,7 @@ clearUploadsBtn.addEventListener("click", () => {
   uploadedPreviews.innerHTML = '';
   
   // Re-render styles grid to update style ref card
-  renderStylesGrid();
+  // renderStylesGrid(); // No longer needed with static HTML
   
   // Update clear uploads button visibility
   updateClearUploadsButton();
@@ -1049,3 +962,206 @@ function addDownloadAllButton() {
   
   resultsGrid.parentNode.insertBefore(container, resultsGrid.nextSibling);
 }
+
+// New Style System JavaScript
+function initializeStyleSystem() {
+  const root = document.getElementById('styles');
+  if (!root) return;
+
+  function syncBindings(card) {
+    const data = readState(card);
+    const isoElement = card.querySelector('[data-bind="iso"]');
+    const apertureElement = card.querySelector('[data-bind="aperture"]');
+    const shutterElement = card.querySelector('[data-bind="shutter"]');
+    const lightingElement = card.querySelector('[data-bind="lighting"]');
+    
+    if (isoElement) isoElement.textContent = data.iso;
+    if (apertureElement) apertureElement.textContent = data.aperture;
+    if (shutterElement) shutterElement.textContent = data.shutter;
+    if (lightingElement) lightingElement.textContent = data.lighting;
+  }
+
+  function readState(card) {
+    return {
+      styleId: card.dataset.styleId,
+      camera: card.dataset.camera,
+      lens: card.dataset.lens,
+      iso: card.dataset.iso,
+      aperture: card.dataset.aperture,
+      shutter: card.dataset.shutter,
+      lighting: card.dataset.lighting
+    };
+  }
+
+  function writeState(card, patch) {
+    Object.entries(patch).forEach(([k, v]) => { 
+      card.dataset[k] = v; 
+    });
+    syncBindings(card);
+    root.dispatchEvent(new CustomEvent('style-change', { 
+      detail: { card, state: readState(card) } 
+    }));
+  }
+
+  root.addEventListener('click', e => {
+    const advBtn = e.target.closest('.style-adv');
+    if (advBtn) {
+      const card = e.target.closest('.style-card');
+      const panel = card.querySelector('.adv-panel');
+      const isOpen = !panel.hasAttribute('hidden');
+      
+      if (isOpen) { 
+        panel.setAttribute('hidden', ''); 
+        advBtn.setAttribute('aria-expanded', 'false');
+        advBtn.querySelector('span').textContent = '⚙️ Avancerat';
+      } else { 
+        panel.removeAttribute('hidden'); 
+        advBtn.setAttribute('aria-expanded', 'true');
+        advBtn.querySelector('span').textContent = '⚙️ Dölj';
+      }
+      return;
+    }
+
+    const chip = e.target.closest('.chip');
+    if (chip) {
+      const card = e.target.closest('.style-card');
+      const wrap = chip.parentElement;
+      wrap.querySelectorAll('.chip').forEach(c => 
+        c.classList.toggle('is-active', c === chip)
+      );
+      writeState(card, { lighting: chip.dataset.value });
+      return;
+    }
+
+    const reset = e.target.closest('.btn-reset');
+    if (reset) {
+      const card = e.target.closest('.style-card');
+      const originalData = {
+        camera: card.getAttribute('data-camera'),
+        lens: card.getAttribute('data-lens'),
+        iso: card.getAttribute('data-iso'),
+        aperture: card.getAttribute('data-aperture'),
+        shutter: card.getAttribute('data-shutter'),
+        lighting: card.getAttribute('data-lighting')
+      };
+      
+      writeState(card, originalData);
+      
+      // Reset form elements
+      const selects = card.querySelectorAll('[data-input]');
+      selects.forEach(el => {
+        const key = el.getAttribute('data-input');
+        if (el.tagName === 'SELECT') {
+          el.value = card.dataset[key];
+        }
+        if (key === 'lighting') {
+          card.querySelectorAll('.chip').forEach(c => 
+            c.classList.toggle('is-active', c.dataset.value === card.dataset.lighting)
+          );
+        }
+      });
+      return;
+    }
+  });
+
+  root.addEventListener('change', e => {
+    const sel = e.target.closest('[data-input]');
+    if (!sel) return;
+    const card = e.target.closest('.style-card');
+    const key = sel.getAttribute('data-input');
+    if (key === 'lighting') return;
+    writeState(card, { [key]: sel.value });
+  });
+
+  // Initial sync
+  document.querySelectorAll('.style-card').forEach(syncBindings);
+}
+
+// Year Settings JavaScript
+function initializeYearSettings() {
+  const yearSlider = document.getElementById('yearSlider');
+  const yearValue = document.getElementById('yearValue');
+  const yearHand = document.getElementById('yearHand');
+  const yearPresets = document.querySelectorAll('.year-preset');
+  
+  if (!yearSlider || !yearValue || !yearHand) return;
+
+  function updateYearDisplay(year) {
+    yearValue.textContent = year;
+    
+    // Calculate rotation for clock hand (0-360 degrees for 1950-2030)
+    const minYear = 1950;
+    const maxYear = 2030;
+    const rotation = ((year - minYear) / (maxYear - minYear)) * 360;
+    yearHand.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+    
+    // Update active preset
+    yearPresets.forEach(preset => {
+      preset.classList.toggle('active', preset.dataset.year == year);
+    });
+    
+    // Dispatch year change event
+    document.dispatchEvent(new CustomEvent('year-change', { 
+      detail: { year: parseInt(year) } 
+    }));
+  }
+
+  yearSlider.addEventListener('input', (e) => {
+    updateYearDisplay(e.target.value);
+  });
+
+  yearPresets.forEach(preset => {
+    preset.addEventListener('click', () => {
+      const year = preset.dataset.year;
+      yearSlider.value = year;
+      updateYearDisplay(year);
+    });
+  });
+
+  // Initialize with default value
+  updateYearDisplay(yearSlider.value);
+}
+
+// Style Reference JavaScript
+function initializeStyleReference() {
+  const styleRefInput = document.getElementById('styleRefInput');
+  const styleRefPreview = document.getElementById('styleRefPreview');
+  
+  if (!styleRefInput || !styleRefPreview) return;
+
+  styleRefPreview.addEventListener('click', () => {
+    styleRefInput.click();
+  });
+
+  styleRefInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      styleRefPreview.innerHTML = `
+        <img src="${e.target.result}" alt="Style reference" 
+             style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+      `;
+      
+      // Dispatch style reference change event
+      document.dispatchEvent(new CustomEvent('style-ref-change', { 
+        detail: { file, dataUrl: e.target.result } 
+      }));
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Initialize the new systems
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize existing systems
+  displayUploadedPreviews();
+  updateClearUploadsButton();
+  updateCostEstimation();
+  
+  // Initialize new style system
+  initializeStyleSystem();
+  initializeYearSettings();
+  initializeStyleReference();
+});

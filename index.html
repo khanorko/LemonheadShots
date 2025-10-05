@@ -52,19 +52,550 @@
         </div>
       </div>
       <div class="step-label">Step 2 — Pick styles</div>
-      <div class="styles-section">
-        <div class="styles-header">
-          <h2 class="styles-title">Choose Your Style</h2>
+      
+      <!-- Styles-sektion -->
+      <section class="styles-section" id="styles">
+        <header class="styles-header">
+          <h2 class="styles-title">Välj stil</h2>
+        </header>
+
+        <div class="styles-grid">
+          <!-- Style Reference Card -->
+          <article class="style-card style-ref-card" data-style-id="reference">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">🎨 Your Own Style (Optional)</h3>
+                <p class="style-desc">Upload a reference image to apply its style to all generated headshots</p>
+              </div>
+            </div>
+            <div class="style-ref-content">
+              <input type="file" id="styleRefInput" accept="image/*" style="display: none;">
+              <div id="styleRefPreview" class="style-ref-preview">
+                <div class="style-ref-placeholder">
+                  <span class="style-ref-icon">📷</span>
+                  <span class="style-ref-text">Upload reference image</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Year Settings Card -->
+          <article class="style-card year-card" data-style-id="year">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">📅 Year Settings</h3>
+                <p class="style-desc">Adjust the era and vintage feel of your portraits</p>
+              </div>
+            </div>
+            
+            <div class="year-panel">
+              <div class="year-display">
+                <div class="year-clock">
+                  <div class="year-hand" id="yearHand"></div>
+                  <div class="year-center"></div>
+                </div>
+                <div class="year-value" id="yearValue">2024</div>
+              </div>
+              
+              <div class="year-controls">
+                <label class="year-label">Era:</label>
+                <input type="range" id="yearSlider" min="1950" max="2030" value="2024" class="year-slider">
+                <div class="year-presets">
+                  <button class="year-preset" data-year="1950">50s</button>
+                  <button class="year-preset" data-year="1970">70s</button>
+                  <button class="year-preset" data-year="1990">90s</button>
+                  <button class="year-preset" data-year="2010">10s</button>
+                  <button class="year-preset" data-year="2024">Now</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Basic Style Card -->
+          <article class="style-card" data-style-id="basic"
+                   data-camera="Canon EOS R5"
+                   data-lens="50mm f/1.8"
+                   data-iso="200"
+                   data-aperture="f/2.8"
+                   data-shutter="1/200s"
+                   data-lighting="softbox">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Basic</h3>
+                <p class="style-desc">Simple combination of uploaded images</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <!-- Kamera-display -->
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">200</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/2.8</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/200s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">softbox</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option>Canon EOS R5</option>
+                    <option>Nikon Z9</option>
+                    <option>Sony A7R IV</option>
+                    <option>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option>85mm f/1.4</option>
+                    <option selected>50mm f/1.8</option>
+                    <option>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>100</option><option selected>200</option><option>400</option><option>800</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.8</option><option selected>f/2.8</option><option>f/4</option><option>f/5.6</option><option>f/8</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option>1/125s</option><option selected>1/200s</option><option>1/250s</option><option>1/500s</option><option>1/1000s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip is-active" data-value="softbox">Softbox</button>
+                    <button class="chip" data-value="golden hour">Golden hour</button>
+                    <button class="chip" data-value="overcast">Overcast</button>
+                    <button class="chip" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Professional Style Card -->
+          <article class="style-card" data-style-id="professional"
+                   data-camera="Canon EOS R5"
+                   data-lens="85mm f/1.4"
+                   data-iso="200"
+                   data-aperture="f/2.0"
+                   data-shutter="1/200s"
+                   data-lighting="softbox">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Professional</h3>
+                <p class="style-desc">Corporate headshot with neutral background</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">200</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/2.0</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/200s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">softbox</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option selected>Canon EOS R5</option>
+                    <option>Nikon Z9</option>
+                    <option>Sony A7R IV</option>
+                    <option>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option selected>85mm f/1.4</option>
+                    <option>50mm f/1.8</option>
+                    <option>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>100</option><option selected>200</option><option>400</option><option>800</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.4</option><option selected>f/2.0</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option>1/125s</option><option selected>1/200s</option><option>1/250s</option><option>1/500s</option><option>1/1000s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip is-active" data-value="softbox">Softbox</button>
+                    <button class="chip" data-value="golden hour">Golden hour</button>
+                    <button class="chip" data-value="overcast">Overcast</button>
+                    <button class="chip" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Neon Noir Style Card -->
+          <article class="style-card" data-style-id="neon"
+                   data-camera="Sony A7R IV"
+                   data-lens="35mm f/2.0"
+                   data-iso="800"
+                   data-aperture="f/1.8"
+                   data-shutter="1/160s"
+                   data-lighting="harsh sunlight">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Neon Noir</h3>
+                <p class="style-desc">Moody cyberpunk portrait, neon reflections, cinematic fog</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">800</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/1.8</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/160s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">harsh sunlight</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option>Canon EOS R5</option>
+                    <option>Sony A7R IV</option>
+                    <option selected>Nikon Z9</option>
+                    <option>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option>85mm f/1.4</option>
+                    <option>50mm f/1.8</option>
+                    <option selected>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>200</option><option>400</option><option selected>800</option><option>1600</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.4</option><option selected>f/1.8</option><option>f/2.0</option><option>f/2.8</option><option>f/4</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option>1/60s</option><option>1/125s</option><option selected>1/160s</option><option>1/200s</option><option>1/250s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip" data-value="softbox">Softbox</button>
+                    <button class="chip" data-value="golden hour">Golden hour</button>
+                    <button class="chip" data-value="overcast">Overcast</button>
+                    <button class="chip is-active" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Coffee Shop Documentary Style Card -->
+          <article class="style-card" data-style-id="coffee"
+                   data-camera="Fujifilm X100V"
+                   data-lens="35mm f/2.0"
+                   data-iso="400"
+                   data-aperture="f/2.0"
+                   data-shutter="1/250s"
+                   data-lighting="golden hour">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Coffee Shop Documentary</h3>
+                <p class="style-desc">Warm café lighting, shallow depth of field, natural expression</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">400</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/2.0</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/250s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">golden hour</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option>Canon EOS R5</option>
+                    <option>Sony A7R IV</option>
+                    <option>Nikon Z9</option>
+                    <option selected>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option>85mm f/1.4</option>
+                    <option>50mm f/1.8</option>
+                    <option selected>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>200</option><option selected>400</option><option>800</option><option>1600</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.8</option><option selected>f/2.0</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option>1/125s</option><option>1/200s</option><option selected>1/250s</option><option>1/500s</option><option>1/1000s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip" data-value="softbox">Softbox</button>
+                    <button class="chip is-active" data-value="golden hour">Golden hour</button>
+                    <button class="chip" data-value="overcast">Overcast</button>
+                    <button class="chip" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Rainy Window Style Card -->
+          <article class="style-card" data-style-id="rain"
+                   data-camera="Canon EOS R5"
+                   data-lens="50mm f/1.8"
+                   data-iso="400"
+                   data-aperture="f/2.8"
+                   data-shutter="1/125s"
+                   data-lighting="overcast">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Rainy Window</h3>
+                <p class="style-desc">Soft lighting through raindrops, reflective glass, melancholic city glow</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">400</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/2.8</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/125s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">overcast</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option selected>Canon EOS R5</option>
+                    <option>Sony A7R IV</option>
+                    <option>Nikon Z9</option>
+                    <option>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option>85mm f/1.4</option>
+                    <option selected>50mm f/1.8</option>
+                    <option>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>200</option><option selected>400</option><option>800</option><option>1600</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.8</option><option>f/2.0</option><option selected>f/2.8</option><option>f/4</option><option>f/5.6</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option selected>1/125s</option><option>1/160s</option><option>1/200s</option><option>1/250s</option><option>1/500s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip" data-value="softbox">Softbox</button>
+                    <button class="chip" data-value="golden hour">Golden hour</button>
+                    <button class="chip is-active" data-value="overcast">Overcast</button>
+                    <button class="chip" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Analog Film Noir Style Card -->
+          <article class="style-card" data-style-id="bwfilm"
+                   data-camera="Nikon Z9"
+                   data-lens="85mm f/1.4"
+                   data-iso="400"
+                   data-aperture="f/2.8"
+                   data-shutter="1/200s"
+                   data-lighting="Rembrandt">
+            <div class="style-head">
+              <div>
+                <h3 class="style-title">Analog Film Noir</h3>
+                <p class="style-desc">High contrast monochrome, vintage 1950s style, shadow play and hard light</p>
+              </div>
+              <button class="style-adv" type="button" aria-expanded="false">
+                <span>⚙️ Avancerat</span>
+              </button>
+            </div>
+
+            <div class="camera-panel">
+              <div class="meter-row">
+                <div class="meter"><span class="m-label">ISO</span><span class="m-value" data-bind="iso">400</span></div>
+                <div class="meter"><span class="m-label">F</span><span class="m-value" data-bind="aperture">f/2.8</span></div>
+                <div class="meter"><span class="m-label">S</span><span class="m-value" data-bind="shutter">1/200s</span></div>
+              </div>
+              <div class="light-row">Light: <strong class="light-value" data-bind="lighting">Rembrandt</strong></div>
+            </div>
+
+            <div class="adv-panel" hidden>
+              <div class="form">
+                <label class="form-field">Camera
+                  <select data-input="camera">
+                    <option>Canon EOS R5</option>
+                    <option>Sony A7R IV</option>
+                    <option selected>Nikon Z9</option>
+                    <option>Fujifilm X100V</option>
+                  </select>
+                </label>
+                <label class="form-field">Lens
+                  <select data-input="lens">
+                    <option selected>85mm f/1.4</option>
+                    <option>50mm f/1.8</option>
+                    <option>35mm f/2.0</option>
+                    <option>24-70mm f/2.8</option>
+                  </select>
+                </label>
+                <label class="form-field">ISO
+                  <select data-input="iso">
+                    <option>200</option><option selected>400</option><option>800</option><option>1600</option>
+                  </select>
+                </label>
+                <label class="form-field">Aperture
+                  <select data-input="aperture">
+                    <option>f/1.8</option><option>f/2.0</option><option selected>f/2.8</option><option>f/4</option><option>f/5.6</option>
+                  </select>
+                </label>
+                <label class="form-field">Shutter
+                  <select data-input="shutter">
+                    <option>1/125s</option><option>1/160s</option><option selected>1/200s</option><option>1/250s</option><option>1/500s</option>
+                  </select>
+                </label>
+
+                <div class="form-field form-span2">
+                  <div class="form-label">Lighting</div>
+                  <div class="chipset" data-input="lighting">
+                    <button class="chip is-active" data-value="Rembrandt">Rembrandt</button>
+                    <button class="chip" data-value="softbox">Softbox</button>
+                    <button class="chip" data-value="golden hour">Golden hour</button>
+                    <button class="chip" data-value="overcast">Overcast</button>
+                    <button class="chip" data-value="harsh sunlight">Harsh sunlight</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="adv-actions">
+                <button class="btn-reset" type="button">Återställ</button>
+              </div>
+            </div>
+          </article>
         </div>
-        <div id="stylesGrid" class="styles-grid"></div>
-        
-        <div class="generate-cta">
-          <button id="generateBtn" class="generate-button">✨ Generate Headshots</button>
-          <div id="costEstimation" class="cost-line" style="display: none;">
-            Estimated cost: <span id="costAmount">$0.00</span> (≈ <span id="costSek">0 SEK</span>)
+
+        <footer class="generate-footer">
+          <div class="center">
+            <button id="generateBtn" class="generate-button" type="button">✨ Generate Headshots</button>
+            <div id="costEstimation" class="cost-line" style="display: none;">
+              Estimated cost: <span id="costAmount">$0.00</span> (≈ <span id="costSek">0 SEK</span>)
+            </div>
           </div>
-        </div>
-      </div>
+        </footer>
+      </section>
     </div>
 
     <div id="progressContainer" class="progress-container" style="display: none;"></div>
