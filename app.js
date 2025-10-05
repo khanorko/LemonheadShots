@@ -29,6 +29,9 @@ const resultsSection = document.getElementById("resultsSection");
 const uploadedPreviews = document.getElementById("uploadedPreviews");
 const progressContainer = document.getElementById("progressContainer");
 const clearHeadshotsBtn = document.getElementById("clearHeadshotsBtn");
+const costEstimation = document.getElementById("costEstimation");
+const costAmount = document.getElementById("costAmount");
+const costSek = document.getElementById("costSek");
 // Profile label is now part of the button, no separate element needed
 const clearUploadsBtn = document.getElementById("clearUploadsBtn");
 
@@ -96,6 +99,7 @@ function renderStylesGrid() {
         selectedStyles.add(style.id);
       }
       renderStylesGrid();
+      updateCostEstimation();
     });
     stylesGrid.appendChild(card);
   });
@@ -264,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize UI state
   updateClearUploadsButton();
   displayUploadedPreviews();
+  updateCostEstimation();
 });
 
 // Show face mode information modal
@@ -347,6 +352,43 @@ function updateClearUploadsButton() {
     clearUploadsBtn.style.display = 'block';
   } else {
     clearUploadsBtn.style.display = 'none';
+  }
+}
+
+// Function to update cost estimation
+async function updateCostEstimation() {
+  try {
+    const selectedStylesArray = Array.from(selectedStyles);
+    
+    if (selectedStylesArray.length === 0) {
+      costEstimation.style.display = 'none';
+      return;
+    }
+    
+    const response = await fetch('/api/estimate-cost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ selectedStyles: selectedStylesArray })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to get cost estimation');
+    }
+    
+    const data = await response.json();
+    
+    // Update the cost display
+    costAmount.textContent = `$${data.costUSD.toFixed(2)}`;
+    costSek.textContent = `${Math.round(data.costSEK)} SEK`;
+    
+    // Show the cost estimation
+    costEstimation.style.display = 'block';
+    
+  } catch (error) {
+    console.error('Error updating cost estimation:', error);
+    costEstimation.style.display = 'none';
   }
 }
 

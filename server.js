@@ -327,6 +327,37 @@ app.post("/generate-stream", upload.fields([
   }
 });
 
+// Cost estimation endpoint
+app.post('/api/estimate-cost', (req, res) => {
+  try {
+    const { selectedStyles } = req.body;
+    
+    if (!selectedStyles || !Array.isArray(selectedStyles)) {
+      return res.status(400).json({ error: 'Selected styles required' });
+    }
+    
+    // Gemini 2.0 Flash pricing (as of 2024)
+    // Image generation: ~$0.01 per image
+    // We'll use a conservative estimate
+    const costPerImage = 0.01; // $0.01 per generated image
+    const totalCost = selectedStyles.length * costPerImage;
+    
+    // Convert to SEK (approximate rate: 1 USD = 10.5 SEK)
+    const sekRate = 10.5;
+    const costInSek = totalCost * sekRate;
+    
+    res.json({
+      costUSD: totalCost,
+      costSEK: costInSek,
+      stylesCount: selectedStyles.length,
+      costPerImage: costPerImage
+    });
+    
+  } catch (error) {
+    console.error("Cost estimation error:", error);
+    res.status(500).json({ error: 'Cost estimation failed' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
