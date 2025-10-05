@@ -708,7 +708,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   width: 280px;
-  height: 350px;
+  height: 380px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -786,10 +786,11 @@ body {
 
 .result-item img { 
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: 240px;
+  object-fit: contain;
   display: block;
   border-radius: 4px;
+  background: #f8f8f8;
 }
 
 .result-caption { 
@@ -2364,4 +2365,55 @@ body {
 /* Generate button container needs relative positioning */
 .generate-footer .center {
   position: relative;
+}
+
+
+/* Tape elements for polaroid frames */
+.result-item {
+  position: relative;
+}
+
+.result-item::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 35px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  transform: rotate(-12deg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.result-item:nth-child(even)::after {
+  top: 12px;
+  right: 8px;
+  left: auto;
+  transform: rotate(12deg);
+}
+
+/* Additional tape strip for variety */
+.result-item:nth-child(3n)::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 25px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  transform: rotate(8deg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  z-index: 9;
+}
+
+.result-item:nth-child(3n)::before {
+  top: 8px;
+  left: 8px;
+  right: auto;
+  transform: rotate(-8deg);
 }
