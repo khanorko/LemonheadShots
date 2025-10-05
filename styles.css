@@ -2417,3 +2417,31 @@ body {
   right: auto;
   transform: rotate(-8deg);
 }
+
+/* Fix download button cut-off issue */
+.download-all-container {
+  margin: 30px 0 50px !important; /* Increased bottom margin */
+  padding: 20px !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure the results section has enough bottom padding */
+.results-section {
+  padding-bottom: 40px !important;
+  margin-bottom: 20px !important;
+}
+
+/* Make sure the main container doesn't clip content */
+.container {
+  overflow: visible !important;
+  padding-bottom: 40px !important;
+}
+
+/* Ensure body doesn't clip content */
+body {
+  overflow-x: hidden;
+  overflow-y: visible !important;
+  padding-bottom: 20px !important;
+}
+
