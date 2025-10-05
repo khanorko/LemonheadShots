@@ -1337,27 +1337,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearValue = document.getElementById("yearSlider").value;
     const yearNum = parseInt(yearValue) || 2025;
     
-    // Dynamic camera gear selection based on year
+    // Dynamic camera gear and lighting selection based on year
     const getCameraGear = (year) => {
-      if (year >= 2020) return { camera: "Canon EOS R5", lens: "85mm f/1.4L", iso: "ISO 100", aperture: "f/2.8" };
-      if (year >= 2010) return { camera: "Canon 5D Mark II", lens: "85mm f/1.8", iso: "ISO 200", aperture: "f/2.8" };
-      if (year >= 2000) return { camera: "Canon EOS-1D", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/3.5" };
-      if (year >= 1990) return { camera: "Canon EOS 1", lens: "85mm f/1.8", iso: "ISO 400", aperture: "f/4" };
-      if (year >= 1980) return { camera: "Canon AE-1", lens: "85mm f/2", iso: "ISO 200", aperture: "f/4" };
-      if (year >= 1970) return { camera: "Canon FTb", lens: "85mm f/2.8", iso: "ISO 100", aperture: "f/5.6" };
-      if (year >= 1960) return { camera: "Canon P", lens: "85mm f/3.5", iso: "ISO 50", aperture: "f/5.6" };
-      return { camera: "Canon VT", lens: "85mm f/4", iso: "ISO 25", aperture: "f/8" };
+      if (year >= 2020) return { 
+        camera: "Canon EOS R5", 
+        lens: "85mm f/1.4L", 
+        iso: "ISO 100", 
+        aperture: "f/2.8", 
+        shutter: "1/125s",
+        lighting: "soft LED panel"
+      };
+      if (year >= 2010) return { 
+        camera: "Canon 5D Mark II", 
+        lens: "85mm f/1.8", 
+        iso: "ISO 200", 
+        aperture: "f/2.8", 
+        shutter: "1/125s",
+        lighting: "studio strobe"
+      };
+      if (year >= 2000) return { 
+        camera: "Canon EOS-1D", 
+        lens: "85mm f/1.8", 
+        iso: "ISO 400", 
+        aperture: "f/3.5", 
+        shutter: "1/60s",
+        lighting: "hot shoe flash"
+      };
+      if (year >= 1990) return { 
+        camera: "Canon EOS 1", 
+        lens: "85mm f/1.8", 
+        iso: "ISO 400", 
+        aperture: "f/4", 
+        shutter: "1/60s",
+        lighting: "studio tungsten"
+      };
+      if (year >= 1980) return { 
+        camera: "Canon AE-1", 
+        lens: "85mm f/2", 
+        iso: "ISO 200", 
+        aperture: "f/4", 
+        shutter: "1/30s",
+        lighting: "natural window light"
+      };
+      if (year >= 1970) return { 
+        camera: "Canon FTb", 
+        lens: "85mm f/2.8", 
+        iso: "ISO 100", 
+        aperture: "f/5.6", 
+        shutter: "1/15s",
+        lighting: "incandescent bulb"
+      };
+      if (year >= 1960) return { 
+        camera: "Canon P", 
+        lens: "85mm f/3.5", 
+        iso: "ISO 50", 
+        aperture: "f/5.6", 
+        shutter: "1/8s",
+        lighting: "natural daylight"
+      };
+      return { 
+        camera: "Canon VT", 
+        lens: "85mm f/4", 
+        iso: "ISO 25", 
+        aperture: "f/8", 
+        shutter: "1/4s",
+        lighting: "available light"
+      };
     };
     
     const gear = getCameraGear(yearNum);
     
-    prompt = `A ${stylePrompt} portrait captured on handheld 35mm film using a ${gear.camera} with ${gear.lens} at ${gear.iso}, ${gear.aperture}. Photographed in the visual style of ${yearNum}. Golden hour film grain, analog imperfections, slight chromatic aberration, real lens halation, handheld focus softness.
-
-Visible skin texture, natural pores, subtle asymmetry, micro-reflections in eyes.
-
-The scene should feel photographic, tangible, and imperfect — like a scan of a real negative with dust and light leak.
-
-Extreme realism, cinematic lighting, authentic color bleed, film depth, and emotional truth.`;
+    prompt = `A ${stylePrompt} portrait photographed in the visual style of ${yearNum} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. Set the background and mood to match the ${stylePrompt} aesthetic. Let the year guide wardrobe and hair: era-accurate silhouettes, fabrics and accessories with natural fit and drape, and period-consistent hair finish rendered with real strand detail, subtle flyaways and believable hairline texture. Keep it photographic and tactile: visible skin micro-texture and pores, soft subsurface scattering, tiny asymmetries, authentic film grain and halation, gentle lens vignette, slight chromatic aberration and depth falloff. Use ${gear.lighting} shaping and ${gear.camera} + ${gear.lens} at ${gear.iso}, ${gear.aperture}, ${gear.shutter}. The image should embody the time's light, texture and attitude while you freely interpret the specific clothing and hairstyle within that period vocabulary; avoid plastic skin, painterly blur or CGI cleanliness.`;
     
     // Add face mode specific instructions
     const faceMode = document.querySelector("input[name=\"faceMode\"]:checked").value;
