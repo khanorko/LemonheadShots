@@ -86,8 +86,7 @@ app.post("/generate", upload.fields([
       
       // Add year/era styling if specified
       if (year && year !== "2024") {
-        const decade = Math.floor(parseInt(year) / 10) * 10;
-        prompt += ` in ${decade}s style`;
+        prompt += ` in ${year} style`;
       }
       prompt += `. `;
       
@@ -244,8 +243,7 @@ app.post("/generate-stream", upload.fields([
         
         // Add year/era styling if specified
         if (year && year !== "2024") {
-          const decade = Math.floor(parseInt(year) / 10) * 10;
-          prompt += ` in ${decade}s style`;
+          prompt += ` in ${year} style`;
         }
         prompt += `. `;
         
