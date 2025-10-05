@@ -64,12 +64,12 @@ app.post("/generate", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
+    const { styles, primaryImageIndex, multiAngle, portraitAngle, year } = req.body;
     console.log(`🔍 SERVER DEBUG: Year setting: ${year}`);    const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
-    const shouldMixFaces = mixFaces === 'true';
+    const shouldMultiAngle = multiAngle === "true";
 
     if (!profileFiles.length || !selectedStyles.length) {
       return res.status(400).send("Missing profiles or styles");
@@ -159,10 +159,6 @@ app.post("/generate", upload.fields([
       
       prompt = `A ${stylePrompt} portrait photographed in the visual style of ${yearNum} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. Set the background and mood to match the ${stylePrompt} aesthetic. Let the year guide wardrobe and hair: era-accurate silhouettes, fabrics and accessories with natural fit and drape, and period-consistent hair finish rendered with real strand detail, subtle flyaways and believable hairline texture. Keep it photographic and tactile: visible skin micro-texture and pores, soft subsurface scattering, tiny asymmetries, authentic film grain and halation, gentle lens vignette, slight chromatic aberration and depth falloff. Use ${gear.lighting} shaping and ${gear.camera} + ${gear.lens} at ${gear.iso}, ${gear.aperture}, ${gear.shutter}. The image should embody the time's light, texture and attitude while you freely interpret the specific clothing and hairstyle within that period vocabulary; avoid plastic skin, painterly blur or CGI cleanliness.`;
       
-      if (shouldMixFaces && profileFiles.length > 1) {
-        // Mix/blend all faces together
-        prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
-        prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
       } else if (profileFiles.length > 1) {
         // Use primary image for facial features, others for style/context
         prompt += `IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). `;
@@ -184,7 +180,7 @@ app.post("/generate", upload.fields([
       const parts = [{ text: prompt }];
 
       // SIMPLE FIX: When preserving primary face, ONLY send the primary image
-      if (!shouldMixFaces && profileFiles.length > 1) {
+      if (profileFiles.length > 1) {
         // Only send the primary image - this is the person whose face we want
         const primaryFile = profileFiles[primaryIdx];
         const primaryData = fs.readFileSync(primaryFile.path, { encoding: "base64" });
@@ -270,12 +266,11 @@ app.post("/generate-stream", upload.fields([
   { name: "styleRef", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { styles, primaryImageIndex, mixFaces, multiAngle, portraitAngle, year } = req.body;
+    const { styles, primaryImageIndex, multiAngle, portraitAngle, year } = req.body;
     const selectedStyles = JSON.parse(styles || "[]");
     const profileFiles = req.files["profiles"] || [];
     const styleRefFile = req.files["styleRef"]?.[0];
     const primaryIdx = parseInt(primaryImageIndex) || 0;
-    const shouldMixFaces = mixFaces === 'true';
     const shouldMultiAngle = multiAngle === "true";
     const selectedAngle = portraitAngle || "front";
     
@@ -417,7 +412,7 @@ Extreme realism, cinematic lighting, authentic color bleed, film depth, and emot
           });
         }
 
-        console.log(`Generating style: ${styleId} (primary: ${primaryIdx}, mix: ${shouldMixFaces})`);
+        console.log(`Generating style: ${styleId} (primary: ${primaryIdx})`);
         console.log(`🎯 FINAL PROMPT SENT TO AI: "${prompt}"`);
         try {
           const response = await ai.models.generateContent({

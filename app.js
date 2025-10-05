@@ -521,29 +521,7 @@ function updateFaceModeUI() {
   const faceMode = document.querySelector('input[name="faceMode"]:checked').value;
   const previewTitle = uploadedPreviews.querySelector('.preview-title');
   
-  if (faceMode === 'mix') {
-    // When mixing, hide primary selection and show all images as equal
-    if (previewTitle && uploadedProfiles.length > 1) {
-      previewTitle.textContent = 'Uploaded Images (all will be blended together)';
-    }
-    
-    // Remove primary selection styling from all images
-    const allCards = uploadedPreviews.querySelectorAll('.preview-card');
-    allCards.forEach(card => {
-      card.classList.remove('primary-selected');
-      card.classList.remove('non-selected'); // Remove fade class
-    });
-    
-    // Update labels to remove stars but keep consistent numbering
-    const allLabels = uploadedPreviews.querySelectorAll('.preview-label');
-    allLabels.forEach((label, idx) => {
-      // Only update if it's a profile label (not style ref)
-      if (label.textContent.includes('Profile')) {
-        label.textContent = `Profile ${idx + 1}`;
-      }
-    });
-    
-  } else if (faceMode === "multi-angle") {
+  if (faceMode === "multi-angle") {
     // Multi-angle analysis mode
     const anglePanel = document.getElementById("angleSelectionPanel");
     if (anglePanel) {
@@ -925,7 +903,6 @@ generateBtn.addEventListener("click", async () => {
     
     // Get face mode from radio buttons
     const faceMode = document.querySelector('input[name="faceMode"]:checked').value;
-    formData.append("mixFaces", faceMode === "mix");
     formData.append("multiAngle", faceMode === "multi-angle");
     if (faceMode === "multi-angle") {
       const selectedAngle = document.querySelector("input[name=\"portraitAngle\"]:checked");
@@ -1413,10 +1390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const faceMode = document.querySelector("input[name=\"faceMode\"]:checked").value;
     const profileFiles = uploadedProfiles;
     
-    if (faceMode === "mix" && profileFiles.length > 1) {
-      prompt += `Blend and mix facial features from all ${profileFiles.length} provided images to create a composite face. `;
-      prompt += "Combine distinctive features from each image into a unified, cohesive face. ";
-    } else if (faceMode === "multi-angle" && profileFiles.length >= 3) {
+    if (faceMode === "multi-angle" && profileFiles.length >= 3) {
       const selectedAngle = document.querySelector("input[name=\"portraitAngle\"]:checked");
       const anglePrompts = {
         "front": "Generate a direct frontal portrait",
