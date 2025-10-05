@@ -25,8 +25,10 @@ const profilesInput = document.getElementById("profilesInput");
 const generateBtn = document.getElementById("generateBtn");
 const stylesGrid = document.getElementById("stylesGrid");
 const resultsGrid = document.getElementById("resultsGrid");
+const resultsSection = document.getElementById("resultsSection");
 const uploadedPreviews = document.getElementById("uploadedPreviews");
 const progressContainer = document.getElementById("progressContainer");
+const clearHeadshotsBtn = document.getElementById("clearHeadshotsBtn");
 // Profile label is now part of the button, no separate element needed
 const clearUploadsBtn = document.getElementById("clearUploadsBtn");
 
@@ -331,6 +333,16 @@ clearUploadsBtn.addEventListener("click", () => {
   console.log("All uploads cleared");
 });
 
+// Clear headshots functionality
+clearHeadshotsBtn.addEventListener("click", () => {
+  // Clear results
+  resultsGrid.innerHTML = '';
+  generatedResults = [];
+  
+  // Hide results section
+  resultsSection.style.display = 'none';
+});
+
 function displayUploadedPreviews() {
   uploadedPreviews.innerHTML = '';
   
@@ -417,10 +429,6 @@ generateBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Clear previous results
-  resultsGrid.innerHTML = '';
-  generatedResults = [];
-  
   // Show progress tracking
   showProgressTracking(Array.from(selectedStyles));
   // Scroll progress into view
@@ -551,10 +559,11 @@ function addResult(styleId, styleName, imageUrl) {
   resultsGrid.appendChild(resultItem);
   generatedResults.push({ styleId, styleName, imageUrl });
   
-  // Scroll to results when first result is added
+  // Show results section and scroll to it when first result is added
   if (generatedResults.length === 1) {
+    resultsSection.style.display = 'block';
     setTimeout(() => {
-      resultsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 200);
   }
   

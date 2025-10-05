@@ -1197,3 +1197,45 @@ body {
   font-weight: 600;
   color: var(--text);
 }
+
+/* Results Section */
+.results-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-radius: 15px;
+  border: 2px solid var(--accent-2);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--accent-2);
+}
+
+.results-header h3 {
+  margin: 0;
+  font-family: 'Caveat', cursive;
+  font-size: 28px;
+  color: var(--text);
+}
+
+.btn-secondary {
+  background: var(--accent-3);
+  color: var(--text);
+  border: 2px solid var(--text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--text);
+  color: var(--bg-primary);
+  transform: translateY(-2px);
+}
