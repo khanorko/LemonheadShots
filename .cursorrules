@@ -3,6 +3,31 @@
 ## 🍌 Project Overview
 AI-powered headshot generator using Google Gemini API to create professional headshots from uploaded images.
 
+# Project Rules for LemonheadShots
+
+## CRITICAL: Never Change Working Features
+- NEVER modify working functionality without explicit user instruction
+- ONLY fix bugs that are specifically reported
+- ALWAYS ask before changing behavior, even if it seems like an improvement
+- WAIT for confirmation before deploying changes
+
+## Development Process
+- Focus only on what the user explicitly asks for
+- Keep changes minimal and focused
+- Test changes locally before suggesting deployment
+- Never assume what the user wants
+
+## Current Working Features (DO NOT CHANGE)
+- Style selection: Single selection mode (radio button behavior)
+- Upload previews: Polaroid-style frames with plus button
+- Generate button hover: Shows prompt preview
+- File handling: Current upload system works
+
+## Only Fix What's Broken
+- If user reports a bug, fix ONLY that bug
+- If user asks for a feature, implement ONLY that feature
+- Never "improve" things that aren't broken
+
 ## 🛠️ Tech Stack
 
 ### Backend
