@@ -240,6 +240,9 @@ function handleStyleSelection(event) {
   const styleId = styleCard.dataset.styleId;
   if (!styleId) return;
   
+  // Skip settings card - it's not a selectable style
+  if (styleId === 'settings') return;
+  
   // Single selection mode - deselect all others first
   document.querySelectorAll('.style-card').forEach(card => {
     card.classList.remove('selected');
