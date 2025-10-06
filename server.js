@@ -17,6 +17,20 @@ const upload = multer({ dest: "uploads/" });
 app.use(cors());
 app.use(express.json());
 
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`🔍 INCOMING REQUEST: ${req.method} ${req.url}`);
+  console.log(`🔍 Headers:`, {
+    'content-type': req.headers['content-type'],
+    'origin': req.headers.origin,
+    'user-agent': req.headers['user-agent']?.substring(0, 50) + '...'
+  });
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log(`🔍 Body keys:`, Object.keys(req.body));
+  }
+  next();
+});
+
 // Serve static frontend files
 app.use(express.static('.'));
 
@@ -609,4 +623,5 @@ app.listen(PORT, () => {
   console.log(`🍋 lemon Headshot Generator backend running on http://localhost:${PORT}`);
   console.log(`🚀 Server started successfully with latest code!`);
   console.log(`🔍 Debug endpoint available at: http://localhost:${PORT}/debug-api`);
+  console.log(`🔍 Request logging enabled - all incoming requests will be logged`);
 });
