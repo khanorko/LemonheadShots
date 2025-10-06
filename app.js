@@ -214,18 +214,20 @@ function updatePrimaryImageOptions() {
 }
 
 function handleStyleSelection(event) {
-  if (!event.target.classList.contains("style-card")) return;
+  // Find the closest style-card element (handles clicks on child elements)
+  const styleCard = event.target.closest('.style-card');
+  if (!styleCard) return;
   
-  const styleId = event.target.dataset.styleId;
+  const styleId = styleCard.dataset.styleId;
   if (!styleId) return;
   
   // Toggle selection
   if (selectedStyles.includes(styleId)) {
     selectedStyles = selectedStyles.filter(id => id !== styleId);
-    event.target.classList.remove("selected");
+    styleCard.classList.remove("selected");
   } else {
     selectedStyles.push(styleId);
-    event.target.classList.add("selected");
+    styleCard.classList.add("selected");
   }
   
   console.log(`🎨 Selected styles: ${selectedStyles.join(", ")}`);
