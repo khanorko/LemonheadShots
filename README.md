@@ -21,7 +21,8 @@ Multi-image composition & style generation powered by **Gemini 2.5 Flash Image**
 
 1. **Clone or download this repo**:
    ```bash
-   cd /Users/johansalo/lemonHeadshotGen
+   git clone https://github.com/khanorko/LemonheadShots.git
+   cd LemonheadShots
    ```
 
 2. **Install backend dependencies**:
