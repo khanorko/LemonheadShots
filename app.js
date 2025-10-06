@@ -221,16 +221,16 @@ function handleStyleSelection(event) {
   const styleId = styleCard.dataset.styleId;
   if (!styleId) return;
   
-  // Toggle selection
-  if (selectedStyles.includes(styleId)) {
-    selectedStyles = selectedStyles.filter(id => id !== styleId);
-    styleCard.classList.remove("selected");
-  } else {
-    selectedStyles.push(styleId);
-    styleCard.classList.add("selected");
-  }
+  // Single selection mode - deselect all others first
+  document.querySelectorAll('.style-card').forEach(card => {
+    card.classList.remove('selected');
+  });
   
-  console.log(`🎨 Selected styles: ${selectedStyles.join(", ")}`);
+  // Select only the clicked style
+  selectedStyles = [styleId];
+  styleCard.classList.add('selected');
+  
+  console.log(`🎨 Selected style: ${styleId}`);
   updateCostEstimate();
   updateGenerateButton();
 }
