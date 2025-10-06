@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCostEstimate();
   updateYearDisplay();
   loadSavedResults();
-  showEmptyUploadFrame();
+  displayUploadedPreviews();
 });
 
 function initializeEventListeners() {
@@ -123,6 +123,9 @@ function initializeEventListeners() {
   
   // Portrait angle
   portraitAngle?.addEventListener("change", updateCostEstimate);
+  
+  // Add hover functionality for generate button
+  addGenerateButtonHover();
 }
 
 function showEmptyUploadFrame() {
@@ -573,3 +576,65 @@ function loadSavedResults() {
 document.addEventListener("DOMContentLoaded", () => {
   updateGenerateButton();
 });
+
+function addGenerateButtonHover() {
+  const generateBtn = document.getElementById("generateBtn");
+  const promptPreview = document.getElementById("promptPreview");
+  const promptPreviewText = document.getElementById("promptPreviewText");
+  
+  if (!generateBtn || !promptPreview || !promptPreviewText) return;
+  
+  // Show prompt preview on hover
+  generateBtn.addEventListener("mouseenter", () => {
+    if (uploadedFiles.length > 0 && selectedStyles.length > 0) {
+      // Build the final prompt
+      const finalPrompt = buildFinalPrompt();
+      promptPreviewText.textContent = finalPrompt;
+      promptPreview.style.display = "block";
+    }
+  });
+  
+  // Hide prompt preview when mouse leaves
+  generateBtn.addEventListener("mouseleave", () => {
+    promptPreview.style.display = "none";
+  });
+  
+  // Close button functionality
+  const closeBtn = promptPreview.querySelector(".prompt-preview-close");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      promptPreview.style.display = "none";
+    });
+  }
+}
+
+function buildFinalPrompt() {
+  if (uploadedFiles.length === 0 || selectedStyles.length === 0) {
+    return "Please upload images and select styles first.";
+  }
+  
+  let prompt = "Generate professional headshots with the following specifications:\n\n";
+  
+  // Add style information
+  prompt += "STYLES:\n";
+  selectedStyles.forEach(styleId => {
+    const style = STYLES.find(s => s.id === styleId);
+    if (style) {
+      prompt += `• ${style.title}: ${style.desc}\n`;
+    }
+  });
+  
+  // Add image information
+  prompt += `\nIMAGES: ${uploadedFiles.length} profile image(s) uploaded\n`;
+  if (uploadedFiles.length > 1) {
+    prompt += `Primary image: ${uploadedFiles[0].name}\n`;
+  }
+  
+  // Add technical specifications
+  prompt += "\nTECHNICAL SPECS:\n";
+  prompt += "• High resolution, professional quality\n";
+  prompt += "• Clean background, proper lighting\n";
+  prompt += "• Sharp focus, good composition\n";
+  
+  return prompt;
+}
