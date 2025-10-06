@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCostEstimate();
   updateYearDisplay();
   loadSavedResults();
-  displayUploadedPreviews();
+  showEmptyUploadFrame();
 });
 
 function initializeEventListeners() {
@@ -131,16 +131,35 @@ function initializeEventListeners() {
 function showEmptyUploadFrame() {
   if (!uploadedPreviews) return;
   
-  uploadedPreviews.innerHTML = `
-    <div class="preview-title">📸 Your Uploaded Images</div>
-    <div class="preview-grid">
-      <div class="empty-upload-frame" onclick="document.getElementById('profilesInput').click()">
-        <div class="upload-icon">📷</div>
-        <div class="upload-text">Click to upload images</div>
-        <div class="upload-subtext">or drag & drop here</div>
-      </div>
-    </div>
-  `;
+  uploadedPreviews.innerHTML = '';
+  
+  const previewTitle = document.createElement('h3');
+  previewTitle.className = 'preview-title';
+  previewTitle.textContent = 'Upload Your Images';
+  uploadedPreviews.appendChild(previewTitle);
+  
+  const previewGrid = document.createElement('div');
+  previewGrid.className = 'preview-grid';
+  
+  const emptyFrame = document.createElement('div');
+  emptyFrame.className = 'empty-upload-frame';
+  emptyFrame.addEventListener('click', () => {
+    profilesInput.click();
+  });
+  
+  const ctaButton = document.createElement('button');
+  ctaButton.className = 'upload-cta-button';
+  ctaButton.textContent = '+';
+  
+  const ctaText = document.createElement('div');
+  ctaText.className = 'upload-cta-text';
+  ctaText.textContent = 'Click to upload images';
+  
+  emptyFrame.appendChild(ctaButton);
+  emptyFrame.appendChild(ctaText);
+  previewGrid.appendChild(emptyFrame);
+  
+  uploadedPreviews.appendChild(previewGrid);
 }
 
 function handleProfileUpload(event) {
