@@ -88,6 +88,7 @@ const primaryImageIndex = document.getElementById("primaryImageIndex");
 const multiAngleToggle = document.getElementById("multiAngleToggle");
 const mixFacesToggle = document.getElementById("mixFacesToggle");
 const portraitAngle = document.getElementById("portraitAngle");
+const uploadedPreviews = document.getElementById("uploadedPreviews");
 
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
@@ -95,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCostEstimate();
   updateYearDisplay();
   loadSavedResults();
+  showEmptyUploadFrame();
 });
 
 function initializeEventListeners() {
@@ -123,6 +125,21 @@ function initializeEventListeners() {
   portraitAngle?.addEventListener("change", updateCostEstimate);
 }
 
+function showEmptyUploadFrame() {
+  if (!uploadedPreviews) return;
+  
+  uploadedPreviews.innerHTML = `
+    <div class="preview-title">📸 Your Uploaded Images</div>
+    <div class="preview-grid">
+      <div class="empty-upload-frame" onclick="document.getElementById('profilesInput').click()">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">Click to upload images</div>
+        <div class="upload-subtext">or drag & drop here</div>
+      </div>
+    </div>
+  `;
+}
+
 function handleProfileUpload(event) {
   const files = Array.from(event.target.files);
   uploadedFiles = files;
@@ -137,6 +154,38 @@ function handleProfileUpload(event) {
   
   // Show upload success
   showUploadSuccess(files.length);
+  
+  // Show uploaded images in polaroid frames
+  showUploadedPreviews();
+}
+
+function showUploadedPreviews() {
+  if (!uploadedPreviews) return;
+  
+  if (uploadedFiles.length === 0) {
+    showEmptyUploadFrame();
+    return;
+  }
+  
+  const previewHTML = `
+    <div class="preview-title">📸 Your Uploaded Images</div>
+    <div class="preview-grid">
+      ${uploadedFiles.map((file, index) => `
+        <div class="preview-card ${index === 0 ? 'primary' : ''}" data-index="${index}">
+          <div class="preview-image">
+            <img src="${URL.createObjectURL(file)}" alt="${file.name}" />
+            ${index === 0 ? '<div class="primary-badge">⭐ PRIMARY</div>' : ''}
+          </div>
+          <div class="preview-info">
+            <div class="preview-filename">${file.name}</div>
+            <div class="preview-size">${(file.size / 1024 / 1024).toFixed(1)} MB</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  uploadedPreviews.innerHTML = previewHTML;
 }
 
 function handleStyleRefUpload(event) {
@@ -488,6 +537,9 @@ function clearUploads() {
   document.querySelectorAll(".style-card.selected").forEach(card => {
     card.classList.remove("selected");
   });
+  
+  // Reset upload previews
+  showEmptyUploadFrame();
   
   updateCostEstimate();
   updateGenerateButton();
