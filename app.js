@@ -121,10 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
    // Show results section if requested
    if (showResults === 'true') {
      // Scroll to results section
-     const resultsSection = document.getElementById('resultsSection');
-     if (resultsSection) {
-       resultsSection.scrollIntoView({ behavior: 'smooth' });
-     }
+    
+         // Show and scroll to results section
+    const resultsSection = document.getElementById('resultsSection');
+    if (resultsSection) {
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
    }
 });
 
