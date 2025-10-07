@@ -574,6 +574,7 @@ function addResultToContainer(result) {
   // Get elements fresh each time to ensure they exist
   const container = document.getElementById("resultsGrid");
   const section = document.getElementById("resultsSection");
+  const filename = typeof result.imageUrl === 'string' ? result.imageUrl.split('/').pop() : null;
   
   console.log('🔍 Results container found:', !!container);
   console.log('🔍 Results section found:', !!section);
@@ -592,9 +593,29 @@ function addResultToContainer(result) {
   section.style.display = "block";
   console.log('✅ Results section shown');
 
+  // If a card for this exact filename already exists, update its paid state and avoid duplicate
+  if (filename) {
+    const existing = container.querySelector(`.result-card[data-filename="${filename}"]`);
+    if (existing) {
+      try {
+        const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+        if (paidImages.includes(filename)) {
+          const paidBtn = existing.querySelector('.paid-btn');
+          if (paidBtn) paidBtn.textContent = '💳 Download';
+        }
+      } catch (_) { /* noop */ }
+      // Already present, no need to add another duplicate
+      return;
+    }
+  }
+
   // Create result card without innerHTML to avoid CSP issues
   const resultCard = document.createElement("div");
   resultCard.className = "result-card";
+  if (filename) {
+    // Tag card with filename for future updates/dedup
+    resultCard.dataset.filename = filename;
+  }
   
   // Create image element
   const img = document.createElement("img");
@@ -625,7 +646,17 @@ function addResultToContainer(result) {
   // Create paid download button with event listener (CSP-compliant)
   const paidBtn = document.createElement("button");
   paidBtn.className = "download-btn paid-btn";
-  paidBtn.textContent = "💳 Download (10 SEK)";
+  // Set button text based on whether this exact file is already paid
+  try {
+    const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+    if (filename && paidImages.includes(filename)) {
+      paidBtn.textContent = "💳 Download";
+    } else {
+      paidBtn.textContent = "💳 Download (10 SEK)";
+    }
+  } catch (_) {
+    paidBtn.textContent = "💳 Download (10 SEK)";
+  }
   paidBtn.style.cssText = "background: var(--accent-3); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;";
   paidBtn.addEventListener('click', () => {
     console.log('🔍 Paid download clicked:', result.imageUrl, result.styleId);
