@@ -93,50 +93,78 @@ const uploadedPreviews = document.getElementById("uploadedPreviews");
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
   initializeEventListeners();
+  // Ensure previously generated results are available after redirects
+  try { loadSavedResults(); } catch (e) { /* noop */ }
   updateCostEstimate();
   updateYearDisplay();
   showEmptyUploadFrame();
   
-   // Handle payment success callback
-   const urlParams = new URLSearchParams(window.location.search);
-   const sessionId = urlParams.get('session_id');
-   const filename = urlParams.get('image'); // Server sends 'image' parameter with filename
-   const showResults = urlParams.get('show_results');
-   
-   if (sessionId && filename) {
-     // Payment was successful, mark image as paid (using filename)
-     const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
-     if (!paidImages.includes(filename)) {
-       paidImages.push(filename);
-       localStorage.setItem('paidImages', JSON.stringify(paidImages));
-     }
-     
-     // Clean up URL
-     window.history.replaceState({}, document.title, window.location.pathname);
-     
-     // Show success message
-     alert('Payment successful! You can now download your headshot.');
-   }
-  // Show results section if requested
-  if (showResults === 'true' && filename) {
-    // Show and scroll to results section
-    const resultsSection = document.getElementById('resultsSection');
-    if (resultsSection) {
-      resultsSection.style.display = 'block';
-      
-      // Extract styleId from filename (e.g., "1759677845992_creative.png" -> "creative")
-      const styleId = filename.split('_')[1]?.replace('.png', '') || 'paid-image';
-      
-      // Add the paid image to results
-      const paidImageResult = {
-        imageUrl: `/uploads/${filename}`,
-        styleId: styleId,
-        styleName: styleId.charAt(0).toUpperCase() + styleId.slice(1) + ' Headshot'
-      };
-      
-      addResultToContainer(paidImageResult);
-      
-      resultsSection.scrollIntoView({ behavior: 'smooth' });
+  // Handle payment success callback
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  const imageParam = urlParams.get('image') || urlParams.get('paid_image'); // accept both
+  const showResults = urlParams.get('show_results');
+
+  if (sessionId && imageParam) {
+    let resolvedFilename = null;
+    let resolvedImageUrl = null;
+    let resolvedStyleId = null;
+    let resolvedStyleName = 'Paid Headshot';
+
+    if (imageParam.includes('.png')) {
+      // Server provided the full filename
+      resolvedFilename = imageParam;
+      resolvedImageUrl = `/uploads/${resolvedFilename}`;
+      resolvedStyleId = resolvedFilename.split('_')[1]?.replace('.png', '') || 'paid-image';
+      resolvedStyleName = resolvedStyleId.charAt(0).toUpperCase() + resolvedStyleId.slice(1) + ' Headshot';
+    } else {
+      // Server provided only the styleId; resolve via last saved result
+      try {
+        const saved = JSON.parse(localStorage.getItem('lemonheadshots_results') || '[]');
+        const match = [...saved].reverse().find(r => r.styleId === imageParam && typeof r.imageUrl === 'string');
+        if (match) {
+          resolvedImageUrl = match.imageUrl;
+          resolvedFilename = match.imageUrl.split('/').pop();
+          resolvedStyleId = match.styleId;
+          resolvedStyleName = match.styleName || (resolvedStyleId.charAt(0).toUpperCase() + resolvedStyleId.slice(1) + ' Headshot');
+        }
+      } catch (e) {
+        console.warn('Could not read saved results to resolve filename:', e);
+      }
+    }
+
+    if (resolvedImageUrl && resolvedFilename) {
+      // Mark exact filename as paid
+      try {
+        const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+        if (!paidImages.includes(resolvedFilename)) {
+          paidImages.push(resolvedFilename);
+          localStorage.setItem('paidImages', JSON.stringify(paidImages));
+        }
+      } catch (e) {
+        console.warn('Could not update paidImages:', e);
+      }
+
+      // Clean up URL (remove query params)
+      try { window.history.replaceState({}, document.title, window.location.pathname); } catch (e) { /* noop */ }
+
+      alert('Payment successful! You can now download your headshot.');
+
+      // Optionally show the result
+      if (showResults === 'true') {
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection) {
+          resultsSection.style.display = 'block';
+          addResultToContainer({
+            imageUrl: resolvedImageUrl,
+            styleId: resolvedStyleId || 'paid-image',
+            styleName: resolvedStyleName
+          });
+          resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    } else {
+      console.warn('Could not resolve paid image from URL params. imageParam =', imageParam);
     }
   }
 });
