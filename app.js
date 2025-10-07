@@ -522,7 +522,7 @@ function addResultToContainer(result) {
   }
 
   const resultCard = document.createElement("div");
-  resultCard.className = "preview-card"; // Use polaroid style
+  resultCard.className = "result-card"; // Use different class to avoid hover effects
   resultCard.innerHTML = `
     <img src="${result.imageUrl}" alt="${result.styleName}" loading="lazy" />
     <div class="preview-label">${result.styleName}</div>

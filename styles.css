@@ -2609,3 +2609,53 @@ body {
   transform: translateY(0);
 }
 
+/* Result cards - no hover effects for better button clicking */
+.result-card {
+  border: 4px solid transparent;
+  border-radius: 0;
+  overflow: visible;
+  background: white;
+  padding: 20px 20px 80px 20px;
+  box-shadow: 0 8px 20px var(--shadow);
+  position: relative;
+  transform: rotate(-3deg);
+  width: 280px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.result-card:nth-child(2n) {
+  transform: rotate(3deg);
+}
+
+.result-card:nth-child(3n) {
+  transform: rotate(-2deg);
+}
+
+.result-card:nth-child(4n) {
+  transform: rotate(4deg);
+}
+
+.result-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+  flex: 1;
+}
+
+.result-card::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+}
+
