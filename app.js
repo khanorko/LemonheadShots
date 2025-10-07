@@ -100,14 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
    // Handle payment success callback
    const urlParams = new URLSearchParams(window.location.search);
    const sessionId = urlParams.get('session_id');
-   const imageId = urlParams.get('paid_image');
+   const filename = urlParams.get('image'); // Server sends 'image' parameter with filename
    const showResults = urlParams.get('show_results');
    
-   if (sessionId && imageId) {
-     // Payment was successful, mark image as paid
+   if (sessionId && filename) {
+     // Payment was successful, mark image as paid (using filename)
      const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
-     if (!paidImages.includes(imageId)) {
-       paidImages.push(imageId);
+     if (!paidImages.includes(filename)) {
+       paidImages.push(filename);
        localStorage.setItem('paidImages', JSON.stringify(paidImages));
      }
      
@@ -118,17 +118,20 @@ document.addEventListener("DOMContentLoaded", () => {
      alert('Payment successful! You can now download your headshot.');
    }
   // Show results section if requested
-  if (showResults === 'true' && imageId) {
+  if (showResults === 'true' && filename) {
     // Show and scroll to results section
     const resultsSection = document.getElementById('resultsSection');
     if (resultsSection) {
       resultsSection.style.display = 'block';
       
+      // Extract styleId from filename (e.g., "1759677845992_creative.png" -> "creative")
+      const styleId = filename.split('_')[1]?.replace('.png', '') || 'paid-image';
+      
       // Add the paid image to results
       const paidImageResult = {
-        imageUrl: `/uploads/${imageId}`,
-        styleId: imageId.split('_')[1]?.replace('.png', '') || 'paid-image',
-        styleName: imageId.split('_')[1]?.replace('.png', '') || 'Paid Headshot'
+        imageUrl: `/uploads/${filename}`,
+        styleId: styleId,
+        styleName: styleId.charAt(0).toUpperCase() + styleId.slice(1) + ' Headshot'
       };
       
       addResultToContainer(paidImageResult);
@@ -575,13 +578,17 @@ function addResultToContainer(result) {
 function downloadImage(imageUrl, styleId) {
   console.log('🔍 Download button clicked!', { imageUrl, styleId });
   
-  // Check if user has paid for this image
+  // Extract filename from imageUrl for payment tracking
+  const filename = imageUrl.split('/').pop(); // e.g., "1759677845992_creative.png"
+  
+  // Check if user has paid for this image (using filename, not styleId)
   const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
   console.log('🔍 Paid images:', paidImages);
+  console.log('🔍 Checking payment for filename:', filename);
   
-  if (!paidImages.includes(styleId)) {
-    console.log('🔍 Showing payment modal for:', styleId);
-    showPaymentModal(styleId, imageUrl);
+  if (!paidImages.includes(filename)) {
+    console.log('🔍 Showing payment modal for:', filename);
+    showPaymentModal(filename, imageUrl, styleId);
     return;
   }
   
@@ -607,11 +614,12 @@ function downloadImageFree(imageUrl, styleId) {
   document.body.removeChild(link);
 }
 
-function showPaymentModal(styleId, imageUrl) {
+function showPaymentModal(filename, imageUrl, styleId) {
   const modal = document.getElementById('paymentModal');
   const styleName = STYLES.find(s => s.id === styleId)?.title || styleId;
   
-  modal.dataset.styleId = styleId;
+  modal.dataset.filename = filename; // Store the actual filename for payment
+  modal.dataset.styleId = styleId; // Keep styleId for display purposes
   modal.dataset.imageUrl = imageUrl;
   modal.dataset.styleName = styleName;
   modal.style.display = 'flex';
@@ -623,14 +631,15 @@ function closePaymentModal() {
 
 async function payWithCard() {
   const modal = document.getElementById('paymentModal');
-  const styleId = modal.dataset.styleId;
+  const filename = modal.dataset.filename; // Use filename for payment
+  const styleId = modal.dataset.styleId; // Keep styleId for display
   const styleName = modal.dataset.styleName;
   
   try {
     const response = await fetch('/create-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageId: styleId, styleName })
+      body: JSON.stringify({ imageId: filename, styleName }) // Send filename as imageId
     });
     
     const { url } = await response.json();
