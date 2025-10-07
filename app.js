@@ -313,6 +313,11 @@ function updateGenerateButton() {
   
   generateBtn.disabled = !canGenerate;
   generateBtn.textContent = isGenerating ? "✨ Generating..." : "✨ Generate Headshots";
+  if (isGenerating) {
+    generateBtn.classList.add('generating');
+  } else {
+    generateBtn.classList.remove('generating');
+  }
 }
 
 function showUploadSuccess(count, type = "images") {
