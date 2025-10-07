@@ -637,28 +637,95 @@ function buildFinalPrompt() {
     return "Please upload images and select styles first.";
   }
   
-  let prompt = "Generate professional headshots with the following specifications:\n\n";
+  const styleId = selectedStyles[0]; // Single selection mode
+  const style = STYLES.find(s => s.id === styleId);
+  const stylePrompt = style ? style.desc : "Professional headshot";
   
-  // Add style information
-  prompt += "STYLES:\n";
-  selectedStyles.forEach(styleId => {
-    const style = STYLES.find(s => s.id === styleId);
-    if (style) {
-      prompt += `• ${style.title}: ${style.desc}\n`;
-    }
-  });
+  // Get year setting (default to 2025)
+  const yearSlider = document.getElementById("yearSlider");
+  const yearNum = parseInt(yearSlider?.value) || 2025;
   
-  // Add image information
-  prompt += `\nIMAGES: ${uploadedFiles.length} profile image(s) uploaded\n`;
+  // Dynamic camera gear and lighting selection based on year (same as server)
+  const getCameraGear = (year) => {
+    if (year >= 2020) return { 
+      camera: "Canon EOS R5", 
+      lens: "85mm f/1.4L", 
+      iso: "ISO 100", 
+      aperture: "f/2.8", 
+      shutter: "1/125s",
+      lighting: "soft LED panel"
+    };
+    if (year >= 2010) return { 
+      camera: "Canon 5D Mark II", 
+      lens: "85mm f/1.8", 
+      iso: "ISO 200", 
+      aperture: "f/2.8", 
+      shutter: "1/125s",
+      lighting: "studio strobe"
+    };
+    if (year >= 2000) return { 
+      camera: "Canon EOS-1D", 
+      lens: "85mm f/1.8", 
+      iso: "ISO 400", 
+      aperture: "f/3.5", 
+      shutter: "1/60s",
+      lighting: "hot shoe flash"
+    };
+    if (year >= 1990) return { 
+      camera: "Canon EOS 1", 
+      lens: "85mm f/1.8", 
+      iso: "ISO 400", 
+      aperture: "f/4", 
+      shutter: "1/60s",
+      lighting: "studio tungsten"
+    };
+    if (year >= 1980) return { 
+      camera: "Canon AE-1", 
+      lens: "85mm f/2", 
+      iso: "ISO 200", 
+      aperture: "f/4", 
+      shutter: "1/30s",
+      lighting: "natural window light"
+    };
+    if (year >= 1970) return { 
+      camera: "Canon FTb", 
+      lens: "85mm f/2.8", 
+      iso: "ISO 100", 
+      aperture: "f/5.6", 
+      shutter: "1/15s",
+      lighting: "incandescent bulb"
+    };
+    if (year >= 1960) return { 
+      camera: "Canon P", 
+      lens: "85mm f/3.5", 
+      iso: "ISO 50", 
+      aperture: "f/5.6", 
+      shutter: "1/8s",
+      lighting: "natural daylight"
+    };
+    return { 
+      camera: "Canon VT", 
+      lens: "85mm f/4", 
+      iso: "ISO 25", 
+      aperture: "f/8", 
+      shutter: "1/4s",
+      lighting: "available light"
+    };
+  };
+  
+  const gear = getCameraGear(yearNum);
+  
+  // Build the elaborate prompt (same as server)
+  let prompt = `A ${stylePrompt} portrait photographed in the visual style of ${yearNum} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. Set the background and mood to match the ${stylePrompt} aesthetic. Let the year guide wardrobe and hair: era-accurate silhouettes, fabrics and accessories with natural fit and drape, and period-consistent hair finish rendered with real strand detail, subtle flyaways and believable hairline texture. Keep it photographic and tactile: visible skin micro-texture and pores, soft subsurface scattering, tiny asymmetries, authentic film grain and halation, gentle lens vignette, slight chromatic aberration and depth falloff. Use ${gear.lighting} shaping and ${gear.camera} + ${gear.lens} at ${gear.iso}, ${gear.aperture}, ${gear.shutter}. The image should embody the time's light, texture and attitude while you freely interpret the specific clothing and hairstyle within that period vocabulary; avoid plastic skin, painterly blur or CGI cleanliness.`;
+  
+  // Add image handling instructions
   if (uploadedFiles.length > 1) {
-    prompt += `Primary image: ${uploadedFiles[0].name}\n`;
+    prompt += ` IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). The first image contains the primary person whose face must be preserved exactly. Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. The result should look like the person in the first image, not any other image.`;
+  } else {
+    prompt += ` Use the provided profile image.`;
   }
   
-  // Add technical specifications
-  prompt += "\nTECHNICAL SPECS:\n";
-  prompt += "• High resolution, professional quality\n";
-  prompt += "• Clean background, proper lighting\n";
-  prompt += "• Sharp focus, good composition\n";
+  prompt += ` Keep facial features recognizable and natural. High quality, professional result.`;
   
   return prompt;
 }
