@@ -817,3 +817,11 @@ function buildFinalPrompt() {
   
   return prompt;
 }
+
+// Make functions globally accessible for onclick handlers
+window.downloadImage = downloadImage;
+window.downloadImageFree = downloadImageFree;
+window.showPaymentModal = showPaymentModal;
+window.closePaymentModal = closePaymentModal;
+window.payWithSwish = payWithSwish;
+window.payWithCard = payWithCard;
