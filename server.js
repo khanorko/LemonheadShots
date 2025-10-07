@@ -693,7 +693,7 @@ app.post('/create-payment', async (req, res) => {
             name: `AI Headshot: ${styleName}`,
             description: 'Download your generated headshot'
           },
-          unit_amount: 10, // 10 öre = 0.10 SEK
+          unit_amount: 1000, // 1000 öre = 10.00 SEK
         },
         quantity: 1,
       }],
