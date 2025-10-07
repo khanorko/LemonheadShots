@@ -34,6 +34,9 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static('.'));
 
+// Serve uploaded/generated images
+app.use('/uploads', express.static('uploads'));
+
 // Initialize GoogleGenAI with better error handling and debugging
 let ai;
 try {
