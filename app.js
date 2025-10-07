@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeEventListeners();
   updateCostEstimate();
   updateYearDisplay();
-  loadSavedResults();
   showEmptyUploadFrame();
 });
 
