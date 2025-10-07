@@ -723,7 +723,7 @@ app.get('/download', async (req, res) => {
     
     if (session.payment_status === 'paid') {
       // Payment was successful - redirect to main page with session info
-      res.redirect(`/?session_id=${session_id}&image=${image}`);
+      res.redirect(`/?show_results=true&paid_image=${image}&session_id=${session_id}`);
     } else {
       // Payment not completed
       res.redirect('/?payment_failed=true');

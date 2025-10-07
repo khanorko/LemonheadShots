@@ -97,25 +97,35 @@ document.addEventListener("DOMContentLoaded", () => {
   updateYearDisplay();
   showEmptyUploadFrame();
   
-  // Handle payment success callback
-  const urlParams = new URLSearchParams(window.location.search);
-  const sessionId = urlParams.get('session_id');
-  const imageId = urlParams.get('image');
-  
-  if (sessionId && imageId) {
-    // Payment was successful, mark image as paid
-    const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
-    if (!paidImages.includes(imageId)) {
-      paidImages.push(imageId);
-      localStorage.setItem('paidImages', JSON.stringify(paidImages));
-    }
-    
-    // Clean up URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-    
-    // Show success message
-    alert('Payment successful! You can now download your headshot.');
-  }
+   // Handle payment success callback
+   const urlParams = new URLSearchParams(window.location.search);
+   const sessionId = urlParams.get('session_id');
+   const imageId = urlParams.get('paid_image');
+   const showResults = urlParams.get('show_results');
+   
+   if (sessionId && imageId) {
+     // Payment was successful, mark image as paid
+     const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+     if (!paidImages.includes(imageId)) {
+       paidImages.push(imageId);
+       localStorage.setItem('paidImages', JSON.stringify(paidImages));
+     }
+     
+     // Clean up URL
+     window.history.replaceState({}, document.title, window.location.pathname);
+     
+     // Show success message
+     alert('Payment successful! You can now download your headshot.');
+   }
+   
+   // Show results section if requested
+   if (showResults === 'true') {
+     // Scroll to results section
+     const resultsSection = document.getElementById('resultsSection');
+     if (resultsSection) {
+       resultsSection.scrollIntoView({ behavior: 'smooth' });
+     }
+   }
 });
 
 function initializeEventListeners() {
