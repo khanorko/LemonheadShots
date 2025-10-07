@@ -526,21 +526,15 @@ function addResultToContainer(result) {
   resultCard.innerHTML = `
     <img src="${result.imageUrl}" alt="${result.styleName}" loading="lazy" />
     <div class="preview-label">${result.styleName}</div>
-    <div class="result-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;">
-      <button class="download-btn" onclick="downloadImage('${result.imageUrl}', '${result.styleId}')" style="background: var(--accent-3); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        💾 Download (10 SEK)
+    <div class="result-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 1; gap: 10px;">
+      <button class="download-btn free-btn" onclick="downloadImageFree('${result.imageUrl}', '${result.styleId}')" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;">
+        💾 Free Download
+      </button>
+      <button class="download-btn paid-btn" onclick="downloadImage('${result.imageUrl}', '${result.styleId}')" style="background: var(--accent-3); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;">
+        💳 Download (10 SEK)
       </button>
     </div>
   `;
-
-  // Add hover effect to show download button
-  resultCard.addEventListener('mouseenter', () => {
-    resultCard.querySelector('.result-overlay').style.opacity = '1';
-  });
-  
-  resultCard.addEventListener('mouseleave', () => {
-    resultCard.querySelector('.result-overlay').style.opacity = '0';
-  });
 
   resultsContainer.appendChild(resultCard);
 
@@ -554,15 +548,32 @@ function addResultToContainer(result) {
 }
 
 function downloadImage(imageUrl, styleId) {
+  console.log('🔍 Download button clicked!', { imageUrl, styleId });
+  
   // Check if user has paid for this image
   const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+  console.log('🔍 Paid images:', paidImages);
   
   if (!paidImages.includes(styleId)) {
+    console.log('🔍 Showing payment modal for:', styleId);
     showPaymentModal(styleId, imageUrl);
     return;
   }
   
+  console.log('🔍 Image already paid, downloading...');
   // Normal download if already paid
+  const link = document.createElement("a");
+  link.href = imageUrl;
+  link.download = `headshot_${styleId}_${Date.now()}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function downloadImageFree(imageUrl, styleId) {
+  console.log('🔍 Free download button clicked!', { imageUrl, styleId });
+  
+  // Direct download without payment check
   const link = document.createElement("a");
   link.href = imageUrl;
   link.download = `headshot_${styleId}_${Date.now()}.png`;
