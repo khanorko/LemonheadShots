@@ -541,30 +541,78 @@ async function handleGenerate() {
 }
 
 function addResultToContainer(result) {
-  if (!resultsContainer) return;
-
-  // Show the results section when first result is added
-  const resultsSection = document.getElementById("resultsSection");
-  if (resultsSection) {
-    resultsSection.style.display = "block";
+  console.log('🔍 Adding result to container:', result);
+  
+  // Get elements fresh each time to ensure they exist
+  const container = document.getElementById("resultsGrid");
+  const section = document.getElementById("resultsSection");
+  
+  console.log('🔍 Results container found:', !!container);
+  console.log('🔍 Results section found:', !!section);
+  
+  if (!container) {
+    console.error('❌ Results container not found!');
+    return;
+  }
+  
+  if (!section) {
+    console.error('❌ Results section not found!');
+    return;
   }
 
-  const resultCard = document.createElement("div");
-  resultCard.className = "result-card"; // Use different class to avoid hover effects
-  resultCard.innerHTML = `
-    <img src="${result.imageUrl}" alt="${result.styleName}" loading="lazy" />
-    <div class="preview-label">${result.styleName}</div>
-    <div class="result-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 1; gap: 10px;">
-      <button class="download-btn free-btn" onclick="downloadImageFree('${result.imageUrl}', '${result.styleId}')" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;">
-        💾 Free Download
-      </button>
-      <button class="download-btn paid-btn" onclick="downloadImage('${result.imageUrl}', '${result.styleId}')" style="background: var(--accent-3); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;">
-        💳 Download (10 SEK)
-      </button>
-    </div>
-  `;
+  // Show the results section
+  section.style.display = "block";
+  console.log('✅ Results section shown');
 
-  resultsContainer.appendChild(resultCard);
+  // Create result card without innerHTML to avoid CSP issues
+  const resultCard = document.createElement("div");
+  resultCard.className = "result-card";
+  
+  // Create image element
+  const img = document.createElement("img");
+  img.src = result.imageUrl;
+  img.alt = result.styleName;
+  img.loading = "lazy";
+  
+  // Create label
+  const label = document.createElement("div");
+  label.className = "preview-label";
+  label.textContent = result.styleName;
+  
+  // Create overlay
+  const overlay = document.createElement("div");
+  overlay.className = "result-overlay";
+  overlay.style.cssText = "position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 1; gap: 10px;";
+  
+  // Create free download button with event listener (CSP-compliant)
+  const freeBtn = document.createElement("button");
+  freeBtn.className = "download-btn free-btn";
+  freeBtn.textContent = "💾 Free Download";
+  freeBtn.style.cssText = "background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;";
+  freeBtn.addEventListener('click', () => {
+    console.log('🔍 Free download clicked:', result.imageUrl, result.styleId);
+    downloadImageFree(result.imageUrl, result.styleId);
+  });
+  
+  // Create paid download button with event listener (CSP-compliant)
+  const paidBtn = document.createElement("button");
+  paidBtn.className = "download-btn paid-btn";
+  paidBtn.textContent = "💳 Download (10 SEK)";
+  paidBtn.style.cssText = "background: var(--accent-3); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 14px;";
+  paidBtn.addEventListener('click', () => {
+    console.log('🔍 Paid download clicked:', result.imageUrl, result.styleId);
+    downloadImage(result.imageUrl, result.styleId);
+  });
+  
+  // Assemble the card
+  overlay.appendChild(freeBtn);
+  overlay.appendChild(paidBtn);
+  resultCard.appendChild(img);
+  resultCard.appendChild(label);
+  resultCard.appendChild(overlay);
+  
+  container.appendChild(resultCard);
+  console.log('✅ Result card added to container');
 
   // Show download all button if we have 2+ results
   if (generatedResults.length >= 2 && downloadAllBtn) {
@@ -572,7 +620,7 @@ function addResultToContainer(result) {
   }
 
   // Scroll to results
-  resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function downloadImage(imageUrl, styleId) {
