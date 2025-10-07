@@ -117,18 +117,25 @@ document.addEventListener("DOMContentLoaded", () => {
      // Show success message
      alert('Payment successful! You can now download your headshot.');
    }
-   
-   // Show results section if requested
-   if (showResults === 'true') {
-     // Scroll to results section
-    
-         // Show and scroll to results section
+  // Show results section if requested
+  if (showResults === 'true' && imageId) {
+    // Show and scroll to results section
     const resultsSection = document.getElementById('resultsSection');
     if (resultsSection) {
       resultsSection.style.display = 'block';
+      
+      // Add the paid image to results
+      const paidImageResult = {
+        imageUrl: `/uploads/${imageId}`,
+        styleId: imageId.split('_')[1]?.replace('.png', '') || 'paid-image',
+        styleName: imageId.split('_')[1]?.replace('.png', '') || 'Paid Headshot'
+      };
+      
+      addResultToContainer(paidImageResult);
+      
       resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
-   }
+  }
 });
 
 function initializeEventListeners() {
