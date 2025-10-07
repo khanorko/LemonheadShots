@@ -685,7 +685,7 @@ app.post('/create-payment', async (req, res) => {
     }
     
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['swish', 'card'],
+      payment_method_types: ['card'],
       line_items: [{
         price_data: {
           currency: 'sek',
