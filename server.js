@@ -709,6 +709,31 @@ app.post('/create-payment', async (req, res) => {
   }
 });
 
+// Download endpoint for successful payments
+app.get('/download', async (req, res) => {
+  try {
+    const { session_id, image } = req.query;
+    
+    if (!session_id || !image) {
+      return res.status(400).send('Missing session_id or image parameter');
+    }
+    
+    // Verify the payment session with Stripe
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    
+    if (session.payment_status === 'paid') {
+      // Payment was successful - redirect to main page with session info
+      res.redirect(`/?session_id=${session_id}&image=${image}`);
+    } else {
+      // Payment not completed
+      res.redirect('/?payment_failed=true');
+    }
+  } catch (error) {
+    console.error('Download endpoint error:', error);
+    res.redirect('/?payment_error=true');
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🍋 lemon Headshot Generator backend running on http://localhost:${PORT}`);
