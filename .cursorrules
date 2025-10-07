@@ -16,6 +16,7 @@ AI-powered headshot generator using Google Gemini API to create professional hea
 - Keep changes minimal and focused
 - Test changes locally before suggesting deployment
 - Never assume what the user wants
+- **Git Workflow**: After making local commits, always push to GitHub to keep remote repository in sync
 
 ## Current Working Features (DO NOT CHANGE)
 - Style selection: Single selection mode (radio button behavior)
