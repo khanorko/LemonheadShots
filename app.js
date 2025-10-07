@@ -601,7 +601,7 @@ function closePaymentModal() {
   document.getElementById('paymentModal').style.display = 'none';
 }
 
-async function payWithSwish() {
+async function payWithCard() {
   const modal = document.getElementById('paymentModal');
   const styleId = modal.dataset.styleId;
   const styleName = modal.dataset.styleName;
@@ -619,11 +619,6 @@ async function payWithSwish() {
     console.error('Payment failed:', error);
     alert('Payment failed. Please try again.');
   }
-}
-
-async function payWithCard() {
-  // Same as Swish for now - Stripe handles both
-  await payWithSwish();
 }
 
 function downloadAllResults() {
@@ -828,5 +823,4 @@ window.downloadImage = downloadImage;
 window.downloadImageFree = downloadImageFree;
 window.showPaymentModal = showPaymentModal;
 window.closePaymentModal = closePaymentModal;
-window.payWithSwish = payWithSwish;
 window.payWithCard = payWithCard;
