@@ -496,6 +496,12 @@ async function handleGenerate() {
 function addResultToContainer(result) {
   if (!resultsContainer) return;
 
+  // Show the results section when first result is added
+  const resultsSection = document.getElementById("resultsSection");
+  if (resultsSection) {
+    resultsSection.style.display = "block";
+  }
+
   const resultCard = document.createElement("div");
   resultCard.className = "result-card";
   resultCard.innerHTML = `
