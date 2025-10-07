@@ -940,16 +940,33 @@ function buildFinalPrompt() {
   const gear = getCameraGear(yearNum);
   
   // Build the elaborate prompt (same as server)
-  let prompt = `A ${stylePrompt} portrait photographed in the visual style of ${yearNum} — captured using camera gear, lighting, color tone, composition, and shot types typical of that era. Set the background and mood to match the ${stylePrompt} aesthetic. Let the year guide wardrobe and hair: era-accurate silhouettes, fabrics and accessories with natural fit and drape, and period-consistent hair finish rendered with real strand detail, subtle flyaways and believable hairline texture. Keep it photographic and tactile: visible skin micro-texture and pores, soft subsurface scattering, tiny asymmetries, authentic film grain and halation, gentle lens vignette, slight chromatic aberration and depth falloff. Use ${gear.lighting} shaping and ${gear.camera} + ${gear.lens} at ${gear.iso}, ${gear.aperture}, ${gear.shutter}. The image should embody the time's light, texture and attitude while you freely interpret the specific clothing and hairstyle within that period vocabulary; avoid plastic skin, painterly blur or CGI cleanliness.`;
-  
-  // Add image handling instructions
-  if (uploadedFiles.length > 1) {
-    prompt += ` IMPORTANT: Use ONLY the facial features from the FIRST image provided (image 1). The first image contains the primary person whose face must be preserved exactly. Do NOT use facial features from any other images - only use them for background, lighting, clothing, or pose reference. The result should look like the person in the first image, not any other image.`;
-  } else {
-    prompt += ` Use the provided profile image.`;
-  }
-  
-  prompt += ` Keep facial features recognizable and natural. High quality, professional result.`;
+  let prompt = `
+IDENTITY & REFERENCES:
+If multiple images are uploaded, assume they all depict the same person. 
+Automatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions. 
+Use the remaining images only as support for angle, lighting, clothing, hair variation, or background context. 
+Do not mix or average facial features across images. 
+If any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout. 
+
+IDENTITY LOCK:
+Maintain accurate proportions and unique features: eye spacing, eye shape, nose bridge and tip, mouth curvature, cheek and chin structure, jawline, ear placement, and hairline. 
+All generated angles — frontal, three-quarter, or profile — must look like the same person.
+
+CONSISTENCY & REALISM:
+Generate portraits within the same session so the likeness remains identical across outputs. 
+Skin should appear realistic with visible micro-texture, pores, subtle asymmetry, and natural tones. 
+Hair should have real strand detail, natural volume, and a few flyaways. 
+Avoid plastic, airbrushed, painterly, or CGI-smooth results.
+
+STYLE & ERA:
+A ${stylePrompt} portrait in the visual style of ${yearNum}, captured with ${gear.camera} + ${gear.lens} at ISO ${gear.iso}, aperture ${gear.aperture}, and shutter ${gear.shutter}. 
+Lighting setup: ${gear.lighting}. 
+Match the era's atmosphere in color tone, background, and composition.
+
+PRIORITY:
+If the model must choose between stylistic perfection and preserved identity, always prioritize identity. 
+The final images should look like real photographs of the same person from different angles, never like different individuals.
+`;
   
   return prompt;
 }
