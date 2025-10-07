@@ -502,21 +502,25 @@ function addResultToContainer(result) {
   }
 
   const resultCard = document.createElement("div");
-  resultCard.className = "result-card";
+  resultCard.className = "preview-card"; // Use polaroid style
   resultCard.innerHTML = `
-    <div class="result-image">
-      <img src="${result.imageUrl}" alt="${result.styleName}" loading="lazy" />
-      <div class="result-overlay">
-        <button class="download-btn" onclick="downloadImage('${result.imageUrl}', '${result.styleId}')">
-          💾 Save
-        </button>
-      </div>
-    </div>
-    <div class="result-info">
-      <h4>${result.styleName}</h4>
-      <p>${STYLE_PROMPTS[result.styleId] || result.styleId}</p>
+    <img src="${result.imageUrl}" alt="${result.styleName}" loading="lazy" />
+    <div class="preview-label">${result.styleName}</div>
+    <div class="result-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;">
+      <button class="download-btn" onclick="downloadImage('${result.imageUrl}', '${result.styleId}')" style="background: var(--accent-3); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+        💾 Download (10 SEK)
+      </button>
     </div>
   `;
+
+  // Add hover effect to show download button
+  resultCard.addEventListener('mouseenter', () => {
+    resultCard.querySelector('.result-overlay').style.opacity = '1';
+  });
+  
+  resultCard.addEventListener('mouseleave', () => {
+    resultCard.querySelector('.result-overlay').style.opacity = '0';
+  });
 
   resultsContainer.appendChild(resultCard);
 
@@ -526,7 +530,7 @@ function addResultToContainer(result) {
   }
 
   // Scroll to results
-  resultsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+  resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function downloadImage(imageUrl, styleId) {
