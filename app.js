@@ -96,6 +96,26 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCostEstimate();
   updateYearDisplay();
   showEmptyUploadFrame();
+  
+  // Handle payment success callback
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  const imageId = urlParams.get('image');
+  
+  if (sessionId && imageId) {
+    // Payment was successful, mark image as paid
+    const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+    if (!paidImages.includes(imageId)) {
+      paidImages.push(imageId);
+      localStorage.setItem('paidImages', JSON.stringify(paidImages));
+    }
+    
+    // Clean up URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    // Show success message
+    alert('Payment successful! You can now download your headshot.');
+  }
 });
 
 function initializeEventListeners() {
@@ -534,12 +554,60 @@ function addResultToContainer(result) {
 }
 
 function downloadImage(imageUrl, styleId) {
+  // Check if user has paid for this image
+  const paidImages = JSON.parse(localStorage.getItem('paidImages') || '[]');
+  
+  if (!paidImages.includes(styleId)) {
+    showPaymentModal(styleId, imageUrl);
+    return;
+  }
+  
+  // Normal download if already paid
   const link = document.createElement("a");
   link.href = imageUrl;
   link.download = `headshot_${styleId}_${Date.now()}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+function showPaymentModal(styleId, imageUrl) {
+  const modal = document.getElementById('paymentModal');
+  const styleName = STYLES.find(s => s.id === styleId)?.title || styleId;
+  
+  modal.dataset.styleId = styleId;
+  modal.dataset.imageUrl = imageUrl;
+  modal.dataset.styleName = styleName;
+  modal.style.display = 'flex';
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').style.display = 'none';
+}
+
+async function payWithSwish() {
+  const modal = document.getElementById('paymentModal');
+  const styleId = modal.dataset.styleId;
+  const styleName = modal.dataset.styleName;
+  
+  try {
+    const response = await fetch('/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageId: styleId, styleName })
+    });
+    
+    const { url } = await response.json();
+    window.location.href = url;
+  } catch (error) {
+    console.error('Payment failed:', error);
+    alert('Payment failed. Please try again.');
+  }
+}
+
+async function payWithCard() {
+  // Same as Swish for now - Stripe handles both
+  await payWithSwish();
 }
 
 function downloadAllResults() {

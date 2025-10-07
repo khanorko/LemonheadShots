@@ -8,11 +8,15 @@ import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
+import Stripe from "stripe";
 
 dotenv.config();
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
+
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.use(cors());
 app.use(express.json());
@@ -668,6 +672,40 @@ app.post('/api/estimate-cost', (req, res) => {
   } catch (error) {
     console.error("Cost estimation error:", error);
     res.status(500).json({ error: 'Cost estimation failed' });
+  }
+});
+
+// Stripe payment endpoint
+app.post('/create-payment', async (req, res) => {
+  try {
+    const { imageId, styleName } = req.body;
+    
+    if (!imageId || !styleName) {
+      return res.status(400).json({ error: 'Image ID and style name required' });
+    }
+    
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['swish', 'card'],
+      line_items: [{
+        price_data: {
+          currency: 'sek',
+          product_data: { 
+            name: `AI Headshot: ${styleName}`,
+            description: 'Download your generated headshot'
+          },
+          unit_amount: 10, // 10 öre = 0.10 SEK
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${req.headers.origin}/download?session_id={CHECKOUT_SESSION_ID}&image=${imageId}`,
+      cancel_url: `${req.headers.origin}/`,
+    });
+    
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Payment creation failed:', error);
+    res.status(500).json({ error: 'Payment creation failed' });
   }
 });
 
