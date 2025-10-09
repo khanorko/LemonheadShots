@@ -80,6 +80,7 @@ const progressContainer = document.getElementById("progressContainer");
 const costEstimate = document.getElementById("costEstimate");
 const clearResultsBtn = document.getElementById("clearResultsBtn");
 const clearUploadsBtn = document.getElementById("clearUploadsBtn");
+const clearHeadshotsBtn = document.getElementById("clearHeadshotsBtn");
 const downloadAllBtn = document.getElementById("downloadAllBtn");
 const finalPromptPreview = document.getElementById("finalPromptPreview");
 const yearSlider = document.getElementById("yearSlider");
@@ -180,6 +181,7 @@ function initializeEventListeners() {
   // Clear handlers
   clearResultsBtn?.addEventListener("click", clearResults);
   clearUploadsBtn?.addEventListener("click", clearUploads);
+  clearHeadshotsBtn?.addEventListener("click", clearHeadshots);
   downloadAllBtn?.addEventListener("click", downloadAllResults);
   
   // Year slider
@@ -818,6 +820,32 @@ function loadSavedResults() {
   } catch (e) {
     console.warn("Could not load results from localStorage:", e);
   }
+}
+
+function clearHeadshots() {
+  // Clear the results grid
+  const resultsGrid = document.getElementById("resultsGrid");
+  if (resultsGrid) {
+    resultsGrid.innerHTML = '';
+  }
+  
+  // Reset the generatedResults array
+  generatedResults = [];
+  
+  // Hide the results section
+  const resultsSection = document.getElementById("resultsSection");
+  if (resultsSection) {
+    resultsSection.style.display = 'none';
+  }
+  
+  // Clear saved results from localStorage
+  try {
+    localStorage.removeItem('lemonheadshots_results');
+  } catch (e) {
+    console.warn('Could not clear localStorage:', e);
+  }
+  
+  console.log('✅ Headshots cleared');
 }
 
 // Update generate button state on page load
