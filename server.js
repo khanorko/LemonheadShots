@@ -185,6 +185,31 @@ const STYLE_PROMPTS = {
   coffee: "Warm café lighting, shallow depth of field, natural expression",
   rain: "Soft lighting through raindrops, reflective glass, melancholic city glow",
   bwfilm: "High contrast monochrome, vintage 1950s style, shadow play and hard light",
+  
+  // Music/Subculture styles
+  rocknroll: "Classic rock star energy — leather jacket, attitude, stage lighting, rebellious confidence",
+  gothmetal: "Dark romantic aesthetic, dramatic makeup, moody shadows, Victorian meets metal concert",
+  emo: "Early 2000s emo band photo shoot — side-swept hair, band tee, introspective gaze, MySpace era nostalgia",
+  
+  // Animal styles
+  wildcat: "Fierce feline energy — sharp features, amber lighting, predator confidence, wild elegance",
+  eagle: "Majestic bird of prey aesthetic — sharp gaze, mountainous backdrop, regal posture, soaring spirit",
+  dolphin: "Playful aquatic vibe — bright blue tones, splashing energy, joyful expression, ocean shimmer",
+  
+  // Pokemon styles
+  pikachu: "Electric yellow energy, cheerful spark, bright eyes, playful lightning bolt accents, Pokemon trainer card aesthetic",
+  charizard: "Fiery orange-red tones, confident power pose, flame effects, legendary Pokemon energy",
+  mewtwo: "Mysterious purple psychic glow, intense focused stare, futuristic background, legendary presence",
+  
+  // Trading card styles
+  garbagepail: "Grotesque cartoon caricature style, exaggerated features, vibrant colors, 1980s Garbage Pail Kids card aesthetic with glossy finish",
+  magiccard: "Epic fantasy portrait, ornate border frame, mystical glow, Magic: The Gathering card aesthetic with dramatic lighting",
+  pokemoncard: "Official Pokemon trading card style — bright colors, holographic sheen, centered portrait with stats border",
+  
+  // Gaming character styles
+  minecraft: "Blocky pixelated aesthetic, cubic head shape, simplified features, Minecraft character card style with game UI elements",
+  fortnite: "Stylized cartoon character, bold outlines, vibrant colors, Fortnite loading screen aesthetic with dynamic pose",
+  roblox: "Simplified blocky character design, Roblox avatar style, bright primary colors, playful geometric features",
 };
 
 // Original endpoint (kept for backwards compatibility)

@@ -63,7 +63,32 @@ const STYLES = [
   { id: "neon", title: "Neon Noir", desc: "Moody cyberpunk portrait, neon reflections, cinematic fog.", funFactor: 8, moodPalette: ["#0f0f23", "#ff0080", "#00ffff"] },
   { id: "coffee", title: "Coffee Shop Documentary", desc: "Warm café lighting, shallow depth of field, natural expression.", funFactor: 5, moodPalette: ["#8b4513", "#d2691e", "#f4a460"] },
   { id: "rain", title: "Rainy Window", desc: "Soft lighting through raindrops, reflective glass, melancholic city glow.", funFactor: 6, moodPalette: ["#4682b4", "#87ceeb", "#b0c4de"] },
-  { id: "bwfilm", title: "Analog Film Noir", desc: "High contrast monochrome, vintage 1950s style, shadow play and hard light.", funFactor: 7, moodPalette: ["#000000", "#404040", "#ffffff"] }
+  { id: "bwfilm", title: "Analog Film Noir", desc: "High contrast monochrome, vintage 1950s style, shadow play and hard light.", funFactor: 7, moodPalette: ["#000000", "#404040", "#ffffff"] },
+  
+  // Music/Subculture styles
+  { id: "rocknroll", title: "Rock 'n' Roll", desc: "Classic rock star energy — leather jacket, attitude, stage lighting.", funFactor: 9, moodPalette: ["#1a1a1a", "#ff0000", "#ffffff"] },
+  { id: "gothmetal", title: "Goth Metal", desc: "Dark romantic aesthetic, dramatic makeup, moody shadows, Victorian meets metal.", funFactor: 8, moodPalette: ["#000000", "#8b0000", "#4b0082"] },
+  { id: "emo", title: "Emo Era", desc: "Early 2000s emo band photo — side-swept hair, band tee, MySpace nostalgia.", funFactor: 7, moodPalette: ["#2c2c2c", "#ff1493", "#00ffff"] },
+  
+  // Animal styles
+  { id: "wildcat", title: "Wild Cat", desc: "Fierce feline energy — sharp features, amber lighting, predator confidence.", funFactor: 8, moodPalette: ["#ff8c00", "#8b4513", "#ffd700"] },
+  { id: "eagle", title: "Eagle Spirit", desc: "Majestic bird of prey — sharp gaze, mountainous backdrop, regal posture.", funFactor: 7, moodPalette: ["#87ceeb", "#a0522d", "#ffffff"] },
+  { id: "dolphin", title: "Dolphin Joy", desc: "Playful aquatic vibe — bright blue tones, splashing energy, ocean shimmer.", funFactor: 9, moodPalette: ["#00bfff", "#1e90ff", "#87cefa"] },
+  
+  // Pokemon styles
+  { id: "pikachu", title: "Pikachu ⚡", desc: "Electric yellow energy, cheerful spark, Pokemon trainer card aesthetic.", funFactor: 10, moodPalette: ["#ffde00", "#ffa500", "#ff0000"] },
+  { id: "charizard", title: "Charizard 🔥", desc: "Fiery orange-red tones, confident power pose, legendary Pokemon energy.", funFactor: 9, moodPalette: ["#ff4500", "#ff6347", "#ff8c00"] },
+  { id: "mewtwo", title: "Mewtwo 🔮", desc: "Mysterious purple psychic glow, intense stare, legendary presence.", funFactor: 9, moodPalette: ["#9370db", "#8a2be2", "#da70d6"] },
+  
+  // Trading card styles
+  { id: "garbagepail", title: "Garbage Pail Kids", desc: "Grotesque cartoon caricature, exaggerated features, 1980s card aesthetic.", funFactor: 10, moodPalette: ["#ff1493", "#00ff00", "#ffff00"] },
+  { id: "magiccard", title: "Magic Card", desc: "Epic fantasy portrait, ornate border, Magic: The Gathering aesthetic.", funFactor: 8, moodPalette: ["#1a1a2e", "#ffd700", "#c71585"] },
+  { id: "pokemoncard", title: "Pokemon Card", desc: "Official Pokemon card style — bright colors, holographic sheen, stats border.", funFactor: 10, moodPalette: ["#ffde00", "#3b4cca", "#ff0000"] },
+  
+  // Gaming character styles
+  { id: "minecraft", title: "Minecraft", desc: "Blocky pixelated aesthetic, cubic head, Minecraft character card style.", funFactor: 10, moodPalette: ["#8b4513", "#228b22", "#1e90ff"] },
+  { id: "fortnite", title: "Fortnite", desc: "Stylized cartoon character, bold outlines, Fortnite loading screen aesthetic.", funFactor: 9, moodPalette: ["#00ffff", "#ff1493", "#ffd700"] },
+  { id: "roblox", title: "Roblox", desc: "Simplified blocky character, Roblox avatar style, playful geometric features.", funFactor: 9, moodPalette: ["#e74c3c", "#3498db", "#f39c12"] }
 ];
 
 let selectedStyles = [];
