@@ -857,13 +857,14 @@ function addGenerateButtonHover() {
 }
 
 // Prompt builder function (same as server)
-function buildPrompt(stylePrompt, year, gear) {
+function buildPrompt(stylePrompt, year, gear, imageCount = 1) {
   // Prompt configuration (same as prompt-config.json)
   const promptConfig = {
     sections: {
       identity: {
         title: "IDENTITY & REFERENCES",
-        content: "If multiple images are uploaded, assume they all depict the same person.\nAutomatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions.\nUse the remaining images only as support for angle, lighting, clothing, hair variation, or background context.\nDo not mix or average facial features across images.\nIf any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout."
+        standard: "If multiple images are uploaded, assume they all depict the same person.\nAutomatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions.\nUse the remaining images only as support for angle, lighting, clothing, hair variation, or background context.\nDo not mix or average facial features across images.\nIf any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout.",
+        multiAngle: "If multiple images are uploaded, assume they all depict the same person from different angles.\nAnalyze ALL provided images together to build a comprehensive 3D understanding of the person's facial structure, proportions, and distinctive features.\nSynthesize information across all angles — frontal views reveal eye spacing and facial symmetry, side profiles show nose shape and jawline projection, three-quarter angles capture cheekbone structure and face depth.\nIntegrate these perspectives to create a complete mental model of the person's unique appearance.\nIf any single image includes a different person or conflicting traits, identify and disregard only that outlier while preserving the consistent identity present across the majority of images."
       },
       identityLock: {
         title: "IDENTITY LOCK",
@@ -907,6 +908,10 @@ function buildPrompt(stylePrompt, year, gear) {
         .replace(/{{shutter}}/g, gear.shutter)
         .replace(/{{lighting}}/g, gear.lighting);
       prompt += text + '\n';
+    } else if (section.standard && section.multiAngle) {
+      // NEW: Choose version based on image count
+      const content = imageCount >= 3 ? section.multiAngle : section.standard;
+      prompt += content + '\n';
     } else {
       prompt += section.content + '\n';
     }
@@ -999,7 +1004,7 @@ function buildFinalPrompt() {
   const gear = getCameraGear(yearNum);
   
   // Build prompt using centralized configuration (same as server)
-  let prompt = buildPrompt(stylePrompt, yearNum, gear);
+  let prompt = buildPrompt(stylePrompt, yearNum, gear, uploadedFiles.length);
   
   return prompt;
 }

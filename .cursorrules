@@ -150,3 +150,4 @@ The full prompt includes: style description + year-based camera gear + fashion/h
 - RESTORED elaborate prompt structure from commit bff32d1
 - Created centralized prompt system with `prompt-config.json` for consistent frontend/backend prompts
 - Added PERIOD STYLING section with detailed year-based fashion and hair instructions
+- Implemented multi-angle identity enhancement: dynamic prompt selection based on image count (3+ uses synthesis approach)

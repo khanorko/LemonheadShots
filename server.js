@@ -16,7 +16,7 @@ dotenv.config();
 const promptConfig = JSON.parse(fs.readFileSync('./prompt-config.json', 'utf8'));
 
 // Prompt builder function
-function buildPrompt(stylePrompt, year, gear) {
+function buildPrompt(stylePrompt, year, gear, imageCount = 1) {
   let prompt = '';
   
   promptConfig.order.forEach(sectionKey => {
@@ -35,6 +35,10 @@ function buildPrompt(stylePrompt, year, gear) {
         .replace(/{{shutter}}/g, gear.shutter)
         .replace(/{{lighting}}/g, gear.lighting);
       prompt += text + '\n';
+    } else if (section.standard && section.multiAngle) {
+      // NEW: Choose version based on image count
+      const content = imageCount >= 3 ? section.multiAngle : section.standard;
+      prompt += content + '\n';
     } else {
       prompt += section.content + '\n';
     }
@@ -282,7 +286,7 @@ app.post("/generate", upload.fields([
       
       const gear = getCameraGear(yearNum);
       
-      prompt = buildPrompt(stylePrompt, yearNum, gear);
+      prompt = buildPrompt(stylePrompt, yearNum, gear, profileFiles.length);
       
       if (styleRefFile) {
         prompt += "\nApply the style and aesthetic from the style reference image.";
@@ -474,7 +478,7 @@ app.post("/generate-stream", upload.fields([
       
       const gear = getCameraGear(yearNum);
       
-      prompt = buildPrompt(stylePrompt, yearNum, gear);
+      prompt = buildPrompt(stylePrompt, yearNum, gear, profileFiles.length);
         
       if (styleRefFile) {
         prompt += "\nApply the style and aesthetic from the style reference image.";

@@ -2,7 +2,8 @@
   "sections": {
     "identity": {
       "title": "IDENTITY & REFERENCES",
-      "content": "If multiple images are uploaded, assume they all depict the same person.\nAutomatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions.\nUse the remaining images only as support for angle, lighting, clothing, hair variation, or background context.\nDo not mix or average facial features across images.\nIf any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout."
+      "standard": "If multiple images are uploaded, assume they all depict the same person.\nAutomatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions.\nUse the remaining images only as support for angle, lighting, clothing, hair variation, or background context.\nDo not mix or average facial features across images.\nIf any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout.",
+      "multiAngle": "If multiple images are uploaded, assume they all depict the same person from different angles.\nAnalyze ALL provided images together to build a comprehensive 3D understanding of the person's facial structure, proportions, and distinctive features.\nSynthesize information across all angles — frontal views reveal eye spacing and facial symmetry, side profiles show nose shape and jawline projection, three-quarter angles capture cheekbone structure and face depth.\nIntegrate these perspectives to create a complete mental model of the person's unique appearance.\nIf any single image includes a different person or conflicting traits, identify and disregard only that outlier while preserving the consistent identity present across the majority of images."
     },
     "identityLock": {
       "title": "IDENTITY LOCK",
@@ -25,5 +26,12 @@
       "content": "If the model must choose between stylistic perfection and preserved identity, always prioritize identity.\nThe final images should look like real photographs of the same person from different angles, never like different individuals."
     }
   },
-  "order": ["identity", "identityLock", "consistency", "styleEra", "periodStyling", "priority"]
+  "order": [
+    "identity",
+    "identityLock",
+    "consistency",
+    "styleEra",
+    "periodStyling",
+    "priority"
+  ]
 }
