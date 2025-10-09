@@ -192,24 +192,24 @@ const STYLE_PROMPTS = {
   emo: "Early 2000s emo band photo shoot — side-swept hair, band tee, introspective gaze, MySpace era nostalgia",
   
   // Animal styles
-  wildcat: "Fierce feline energy — sharp features, amber lighting, predator confidence, wild elegance",
-  eagle: "Majestic bird of prey aesthetic — sharp gaze, mountainous backdrop, regal posture, soaring spirit",
-  dolphin: "Playful aquatic vibe — bright blue tones, splashing energy, joyful expression, ocean shimmer",
+  wildcat: "Humanoid wildcat hybrid — merge the person with feline traits: cat eyes with slit pupils, subtle fur patterns, pointed ears, sharp features, amber lighting, predator confidence",
+  eagle: "Humanoid eagle hybrid — blend the person with bird of prey features: sharp avian eyes, feathered accents around face and neck, majestic presence, mountainous backdrop",
+  dolphin: "Humanoid dolphin hybrid — fuse the person with aquatic dolphin traits: smooth blue-grey skin tones, playful features, bright ocean colors, splashing energy, shimmer effect",
   
   // Pokemon styles
-  pikachu: "Electric yellow energy, cheerful spark, bright eyes, playful lightning bolt accents, Pokemon trainer card aesthetic",
-  charizard: "Fiery orange-red tones, confident power pose, flame effects, legendary Pokemon energy",
-  mewtwo: "Mysterious purple psychic glow, intense focused stare, futuristic background, legendary presence",
+  pikachu: "Pikachu hybrid portrait — blend the person with Pikachu features: yellow skin tone, rosy electric cheeks, pointed ears. Pokemon trainer card style with lightning bolt accents and vibrant energy",
+  charizard: "Charizard hybrid portrait — merge the person with Charizard features: orange-red skin, subtle dragon scales, fierce expression, small horns. Legendary Pokemon card style with flame effects",
+  mewtwo: "Mewtwo hybrid portrait — fuse the person with Mewtwo characteristics: purple-tinted skin, psychic aura, sleek alien features, intense gaze. Legendary Pokemon card style with mystical glow",
   
   // Trading card styles
-  garbagepail: "Grotesque cartoon caricature style, exaggerated features, vibrant colors, 1980s Garbage Pail Kids card aesthetic with glossy finish",
-  magiccard: "Epic fantasy portrait, ornate border frame, mystical glow, Magic: The Gathering card aesthetic with dramatic lighting",
-  pokemoncard: "Official Pokemon trading card style — bright colors, holographic sheen, centered portrait with stats border",
+  garbagepail: "Garbage Pail Kids character transformation — convert the person into grotesque cartoon form: exaggerated proportions, wacky distortions, vibrant colors, illustrated style. 1980s trading card aesthetic with glossy finish",
+  magiccard: "Fantasy creature transformation — blend the person with mystical features: elf ears, glowing mystical markings, otherworldly elements, epic fantasy presence. Magic: The Gathering card style with ornate border and dramatic lighting",
+  pokemoncard: "Pokemon trainer hybrid — merge the person with Pokemon creature features: subtle monster traits blended with human form, bright vibrant colors, holographic sheen. Official Pokemon card style with stats border",
   
   // Gaming character styles
-  minecraft: "Blocky pixelated aesthetic, cubic head shape, simplified features, Minecraft character card style with game UI elements",
-  fortnite: "Stylized cartoon character, bold outlines, vibrant colors, Fortnite loading screen aesthetic with dynamic pose",
-  roblox: "Simplified blocky character design, Roblox avatar style, bright primary colors, playful geometric features",
+  minecraft: "Minecraft character transformation — convert the person into blocky pixel art: cubic head shape, pixelated features, simplified geometric face, voxel body. Minecraft game aesthetic with UI elements",
+  fortnite: "Fortnite character transformation — stylize the person as cartoon avatar: bold black outlines, exaggerated proportions, vibrant cel-shaded colors, dynamic pose. Fortnite loading screen aesthetic",
+  roblox: "Roblox avatar transformation — convert the person into simplified blocky form: geometric head shape, minimalist features, bright primary colors, playful proportions. Roblox game style",
 };
 
 // Original endpoint (kept for backwards compatibility)
