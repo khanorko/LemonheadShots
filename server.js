@@ -12,6 +12,37 @@ import Stripe from "stripe";
 
 dotenv.config();
 
+// Import prompt configuration
+const promptConfig = JSON.parse(fs.readFileSync('./prompt-config.json', 'utf8'));
+
+// Prompt builder function
+function buildPrompt(stylePrompt, year, gear) {
+  let prompt = '';
+  
+  promptConfig.order.forEach(sectionKey => {
+    const section = promptConfig.sections[sectionKey];
+    prompt += `\n${section.title}:\n`;
+    
+    if (section.template) {
+      // Replace template variables
+      let text = section.template
+        .replace(/{{stylePrompt}}/g, stylePrompt)
+        .replace(/{{year}}/g, year)
+        .replace(/{{camera}}/g, gear.camera)
+        .replace(/{{lens}}/g, gear.lens)
+        .replace(/{{iso}}/g, gear.iso)
+        .replace(/{{aperture}}/g, gear.aperture)
+        .replace(/{{shutter}}/g, gear.shutter)
+        .replace(/{{lighting}}/g, gear.lighting);
+      prompt += text + '\n';
+    } else {
+      prompt += section.content + '\n';
+    }
+  });
+  
+  return prompt;
+}
+
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
@@ -251,33 +282,7 @@ app.post("/generate", upload.fields([
       
       const gear = getCameraGear(yearNum);
       
-      prompt = `
-IDENTITY & REFERENCES:
-If multiple images are uploaded, assume they all depict the same person. 
-Automatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions. 
-Use the remaining images only as support for angle, lighting, clothing, hair variation, or background context. 
-Do not mix or average facial features across images. 
-If any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout. 
-
-IDENTITY LOCK:
-Maintain accurate proportions and unique features: eye spacing, eye shape, nose bridge and tip, mouth curvature, cheek and chin structure, jawline, ear placement, and hairline. 
-All generated angles — frontal, three-quarter, or profile — must look like the same person.
-
-CONSISTENCY & REALISM:
-Generate portraits within the same session so the likeness remains identical across outputs. 
-Skin should appear realistic with visible micro-texture, pores, subtle asymmetry, and natural tones. 
-Hair should have real strand detail, natural volume, and a few flyaways. 
-Avoid plastic, airbrushed, painterly, or CGI-smooth results.
-
-STYLE & ERA:
-A ${stylePrompt} portrait in the visual style of ${yearNum}, captured with ${gear.camera} + ${gear.lens} at ISO ${gear.iso}, aperture ${gear.aperture}, and shutter ${gear.shutter}. 
-Lighting setup: ${gear.lighting}. 
-Match the era's atmosphere in color tone, background, and composition.
-
-PRIORITY:
-If the model must choose between stylistic perfection and preserved identity, always prioritize identity. 
-The final images should look like real photographs of the same person from different angles, never like different individuals.
-`;
+      prompt = buildPrompt(stylePrompt, yearNum, gear);
       
       if (styleRefFile) {
         prompt += "\nApply the style and aesthetic from the style reference image.";
@@ -469,37 +474,11 @@ app.post("/generate-stream", upload.fields([
       
       const gear = getCameraGear(yearNum);
       
-      prompt = `
-IDENTITY & REFERENCES:
-If multiple images are uploaded, assume they all depict the same person. 
-Automatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions. 
-Use the remaining images only as support for angle, lighting, clothing, hair variation, or background context. 
-Do not mix or average facial features across images. 
-If any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout. 
-
-IDENTITY LOCK:
-Maintain accurate proportions and unique features: eye spacing, eye shape, nose bridge and tip, mouth curvature, cheek and chin structure, jawline, ear placement, and hairline. 
-All generated angles — frontal, three-quarter, or profile — must look like the same person.
-
-CONSISTENCY & REALISM:
-Generate portraits within the same session so the likeness remains identical across outputs. 
-Skin should appear realistic with visible micro-texture, pores, subtle asymmetry, and natural tones. 
-Hair should have real strand detail, natural volume, and a few flyaways. 
-Avoid plastic, airbrushed, painterly, or CGI-smooth results.
-
-STYLE & ERA:
-A ${stylePrompt} portrait in the visual style of ${yearNum}, captured with ${gear.camera} + ${gear.lens} at ISO ${gear.iso}, aperture ${gear.aperture}, and shutter ${gear.shutter}. 
-Lighting setup: ${gear.lighting}. 
-Match the era's atmosphere in color tone, background, and composition.
-
-PRIORITY:
-If the model must choose between stylistic perfection and preserved identity, always prioritize identity. 
-The final images should look like real photographs of the same person from different angles, never like different individuals.
-`;
+      prompt = buildPrompt(stylePrompt, yearNum, gear);
         
-        if (styleRefFile) {
-          prompt += "\nApply the style and aesthetic from the style reference image.";
-        }
+      if (styleRefFile) {
+        prompt += "\nApply the style and aesthetic from the style reference image.";
+      }
 
         // Prepare input parts: text + images
         const parts = [{ text: prompt }];

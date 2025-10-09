@@ -856,6 +856,65 @@ function addGenerateButtonHover() {
   }
 }
 
+// Prompt builder function (same as server)
+function buildPrompt(stylePrompt, year, gear) {
+  // Prompt configuration (same as prompt-config.json)
+  const promptConfig = {
+    sections: {
+      identity: {
+        title: "IDENTITY & REFERENCES",
+        content: "If multiple images are uploaded, assume they all depict the same person.\nAutomatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions.\nUse the remaining images only as support for angle, lighting, clothing, hair variation, or background context.\nDo not mix or average facial features across images.\nIf any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout."
+      },
+      identityLock: {
+        title: "IDENTITY LOCK",
+        content: "Maintain accurate proportions and unique features: eye spacing, eye shape, nose bridge and tip, mouth curvature, cheek and chin structure, jawline, ear placement, and hairline.\nAll generated angles — frontal, three-quarter, or profile — must look like the same person."
+      },
+      consistency: {
+        title: "CONSISTENCY & REALISM",
+        content: "Generate portraits within the same session so the likeness remains identical across outputs.\nSkin should appear realistic with visible micro-texture, pores, subtle asymmetry, and natural tones.\nHair should have real strand detail, natural volume, and a few flyaways.\nAvoid plastic, airbrushed, painterly, or CGI-smooth results."
+      },
+      styleEra: {
+        title: "STYLE & ERA",
+        template: "A {{stylePrompt}} portrait in the visual style of {{year}}, captured with {{camera}} + {{lens}} at ISO {{iso}}, aperture {{aperture}}, and shutter {{shutter}}.\nLighting setup: {{lighting}}.\nMatch the era's atmosphere in color tone, background, and composition."
+      },
+      periodStyling: {
+        title: "PERIOD STYLING",
+        template: "Let the year {{year}} guide wardrobe and hair authentically:\n- Wardrobe: Era-accurate silhouettes, fabrics, and accessories with natural fit and drape\n- Hair: Period-consistent styling rendered with real strand detail, subtle flyaways, and believable hairline texture\n- Aesthetics: Authentic {{year}}s fashion sensibility, not costume or caricature\n- Details: Era-appropriate grooming, makeup trends, and styling choices"
+      },
+      priority: {
+        title: "PRIORITY",
+        content: "If the model must choose between stylistic perfection and preserved identity, always prioritize identity.\nThe final images should look like real photographs of the same person from different angles, never like different individuals."
+      }
+    },
+    order: ["identity", "identityLock", "consistency", "styleEra", "periodStyling", "priority"]
+  };
+
+  let prompt = '';
+  
+  promptConfig.order.forEach(sectionKey => {
+    const section = promptConfig.sections[sectionKey];
+    prompt += `\n${section.title}:\n`;
+    
+    if (section.template) {
+      // Replace template variables
+      let text = section.template
+        .replace(/{{stylePrompt}}/g, stylePrompt)
+        .replace(/{{year}}/g, year)
+        .replace(/{{camera}}/g, gear.camera)
+        .replace(/{{lens}}/g, gear.lens)
+        .replace(/{{iso}}/g, gear.iso)
+        .replace(/{{aperture}}/g, gear.aperture)
+        .replace(/{{shutter}}/g, gear.shutter)
+        .replace(/{{lighting}}/g, gear.lighting);
+      prompt += text + '\n';
+    } else {
+      prompt += section.content + '\n';
+    }
+  });
+  
+  return prompt;
+}
+
 function buildFinalPrompt() {
   if (uploadedFiles.length === 0 || selectedStyles.length === 0) {
     return "Please upload images and select styles first.";
@@ -939,34 +998,8 @@ function buildFinalPrompt() {
   
   const gear = getCameraGear(yearNum);
   
-  // Build the elaborate prompt (same as server)
-  let prompt = `
-IDENTITY & REFERENCES:
-If multiple images are uploaded, assume they all depict the same person. 
-Automatically identify the image that shows the clearest, most frontal face — use that as the primary identity reference for facial geometry and proportions. 
-Use the remaining images only as support for angle, lighting, clothing, hair variation, or background context. 
-Do not mix or average facial features across images. 
-If any image includes a different person or conflicting traits, ignore it and preserve a single consistent identity throughout. 
-
-IDENTITY LOCK:
-Maintain accurate proportions and unique features: eye spacing, eye shape, nose bridge and tip, mouth curvature, cheek and chin structure, jawline, ear placement, and hairline. 
-All generated angles — frontal, three-quarter, or profile — must look like the same person.
-
-CONSISTENCY & REALISM:
-Generate portraits within the same session so the likeness remains identical across outputs. 
-Skin should appear realistic with visible micro-texture, pores, subtle asymmetry, and natural tones. 
-Hair should have real strand detail, natural volume, and a few flyaways. 
-Avoid plastic, airbrushed, painterly, or CGI-smooth results.
-
-STYLE & ERA:
-A ${stylePrompt} portrait in the visual style of ${yearNum}, captured with ${gear.camera} + ${gear.lens} at ISO ${gear.iso}, aperture ${gear.aperture}, and shutter ${gear.shutter}. 
-Lighting setup: ${gear.lighting}. 
-Match the era's atmosphere in color tone, background, and composition.
-
-PRIORITY:
-If the model must choose between stylistic perfection and preserved identity, always prioritize identity. 
-The final images should look like real photographs of the same person from different angles, never like different individuals.
-`;
+  // Build prompt using centralized configuration (same as server)
+  let prompt = buildPrompt(stylePrompt, yearNum, gear);
   
   return prompt;
 }
