@@ -9,8 +9,19 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import Stripe from "stripe";
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 dotenv.config();
+
+// Initialize Cloudflare R2 client
+const r2Client = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
+});
 
 // Import prompt configuration
 const promptConfig = JSON.parse(fs.readFileSync('./prompt-config.json', 'utf8'));
@@ -73,8 +84,7 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static('.'));
 
-// Serve uploaded/generated images
-app.use('/uploads', express.static('uploads'));
+// Images now served from Cloudflare R2 - no local static middleware needed
 
 // Initialize GoogleGenAI with better error handling and debugging
 let ai;
@@ -559,22 +569,27 @@ app.post("/generate-stream", upload.fields([
             if (part.inlineData) {
               const base64Image = part.inlineData.data;
               try {
-                // Save image to file instead of sending base64 through SSE
+                // Upload image to R2 instead of saving locally
                 const filename = `${Date.now()}_${styleId}.png`;
-                const filepath = path.join(process.cwd(), 'uploads', filename);
-                
-                // Convert base64 to buffer and save to file
                 const imageBuffer = Buffer.from(base64Image, 'base64');
-                fs.writeFileSync(filepath, imageBuffer);
                 
-                console.log(`✅ Saved image for ${styleId}: ${filename} (${imageBuffer.length} bytes)`);
+                // Upload to Cloudflare R2
+                await r2Client.send(new PutObjectCommand({
+                  Bucket: process.env.R2_BUCKET_NAME,
+                  Key: filename,
+                  Body: imageBuffer,
+                  ContentType: 'image/png',
+                }));
                 
-                // Send image URL instead of base64 data
+                console.log(`✅ Uploaded image to R2 for ${styleId}: ${filename} (${imageBuffer.length} bytes)`);
+                
+                // Send R2 public URL instead of local path
+                const imageUrl = `${process.env.R2_PUBLIC_URL}/${filename}`;
                 const resultData = { 
                   type: 'result', 
                   styleId, 
                   styleName: STYLE_PROMPTS[styleId] || styleId,
-                  imageUrl: `/uploads/${filename}`
+                  imageUrl: imageUrl
                 };
                 const jsonString = JSON.stringify(resultData);
                 console.log(`✅ Sending result for ${styleId}, JSON size: ${jsonString.length} chars`);
